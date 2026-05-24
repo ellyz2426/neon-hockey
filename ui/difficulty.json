@@ -1,0 +1,516 @@
+{
+  "element": {
+    "type": "container",
+    "sourceTag": "div",
+    "children": [
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "DIFFICULTY"
+        ],
+        "properties": {
+          "class": "diff-title"
+        },
+        "dataUid": "uid-2"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "EASY"
+            ],
+            "properties": {
+              "class": "diff-name easy-name"
+            },
+            "dataUid": "uid-4"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "Relaxed AI, slower reactions"
+            ],
+            "properties": {
+              "class": "diff-desc"
+            },
+            "dataUid": "uid-5"
+          }
+        ],
+        "properties": {
+          "id": "easy-btn",
+          "class": "diff-btn easy-btn",
+          "cursor": "pointer"
+        },
+        "dataUid": "uid-3"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "MEDIUM"
+            ],
+            "properties": {
+              "class": "diff-name medium-name"
+            },
+            "dataUid": "uid-7"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "Balanced challenge"
+            ],
+            "properties": {
+              "class": "diff-desc"
+            },
+            "dataUid": "uid-8"
+          }
+        ],
+        "properties": {
+          "id": "medium-btn",
+          "class": "diff-btn medium-btn",
+          "cursor": "pointer"
+        },
+        "dataUid": "uid-6"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "HARD"
+            ],
+            "properties": {
+              "class": "diff-name hard-name"
+            },
+            "dataUid": "uid-10"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "Fast and aggressive AI"
+            ],
+            "properties": {
+              "class": "diff-desc"
+            },
+            "dataUid": "uid-11"
+          }
+        ],
+        "properties": {
+          "id": "hard-btn",
+          "class": "diff-btn hard-btn",
+          "cursor": "pointer"
+        },
+        "dataUid": "uid-9"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "BACK"
+            ],
+            "properties": {
+              "class": "back-text"
+            },
+            "dataUid": "uid-13"
+          }
+        ],
+        "properties": {
+          "id": "diff-back-btn",
+          "class": "back-btn",
+          "cursor": "pointer"
+        },
+        "dataUid": "uid-12"
+      }
+    ],
+    "properties": {
+      "class": "diff-panel"
+    },
+    "dataUid": "uid-1"
+  },
+  "classes": {
+    "diff-panel": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "column",
+        "alignItems": "center",
+        "paddingTop": "2",
+        "paddingBottom": "2",
+        "paddingLeft": "3",
+        "paddingRight": "3",
+        "backgroundColor": "rgba(0, 8, 20, 0.92)",
+        "borderColor": "#00ccff",
+        "borderWidth": "0.12",
+        "borderRadius": 1.5,
+        "gap": "1.2"
+      }
+    },
+    "diff-title": {
+      "content": {
+        "fontSize": "2.5",
+        "color": "#00ccff",
+        "fontWeight": "bold"
+      }
+    },
+    "diff-btn": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "column",
+        "alignItems": "center",
+        "paddingTop": "0.8",
+        "paddingBottom": "0.8",
+        "paddingLeft": "3",
+        "paddingRight": "3",
+        "backgroundColor": "rgba(0, 80, 150, 0.25)",
+        "borderColor": "#0088cc",
+        "borderWidth": "0.08",
+        "borderRadius": 0.6,
+        "cursor": "pointer",
+        "width": "80%"
+      }
+    },
+    "easy-btn": {
+      "content": {
+        "borderColor": "#44ff44"
+      }
+    },
+    "medium-btn": {
+      "content": {
+        "borderColor": "#ffaa00"
+      }
+    },
+    "hard-btn": {
+      "content": {
+        "borderColor": "#ff4444"
+      }
+    },
+    "diff-name": {
+      "content": {
+        "fontSize": "2",
+        "fontWeight": "bold"
+      }
+    },
+    "easy-name": {
+      "content": {
+        "color": "#44ff44"
+      }
+    },
+    "medium-name": {
+      "content": {
+        "color": "#ffaa00"
+      }
+    },
+    "hard-name": {
+      "content": {
+        "color": "#ff4444"
+      }
+    },
+    "diff-desc": {
+      "content": {
+        "fontSize": "1.1",
+        "color": "#6699aa"
+      }
+    },
+    "back-btn": {
+      "content": {
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "paddingTop": "0.6",
+        "paddingBottom": "0.6",
+        "paddingLeft": "2",
+        "paddingRight": "2",
+        "backgroundColor": "rgba(80, 40, 40, 0.3)",
+        "borderColor": "#884444",
+        "borderWidth": "0.06",
+        "borderRadius": 0.5,
+        "cursor": "pointer"
+      }
+    },
+    "back-text": {
+      "content": {
+        "fontSize": "1.3",
+        "color": "#cc8888"
+      }
+    }
+  },
+  "ranges": {
+    "diff-panel": {
+      "start": {
+        "line": 1,
+        "column": 2
+      },
+      "end": {
+        "line": 1,
+        "column": 13
+      }
+    },
+    "diff-title": {
+      "start": {
+        "line": 15,
+        "column": 2
+      },
+      "end": {
+        "line": 15,
+        "column": 13
+      }
+    },
+    "diff-btn": {
+      "start": {
+        "line": 20,
+        "column": 2
+      },
+      "end": {
+        "line": 20,
+        "column": 11
+      }
+    },
+    "easy-btn": {
+      "start": {
+        "line": 35,
+        "column": 2
+      },
+      "end": {
+        "line": 35,
+        "column": 11
+      }
+    },
+    "medium-btn": {
+      "start": {
+        "line": 36,
+        "column": 2
+      },
+      "end": {
+        "line": 36,
+        "column": 13
+      }
+    },
+    "hard-btn": {
+      "start": {
+        "line": 37,
+        "column": 2
+      },
+      "end": {
+        "line": 37,
+        "column": 11
+      }
+    },
+    "diff-name": {
+      "start": {
+        "line": 38,
+        "column": 2
+      },
+      "end": {
+        "line": 38,
+        "column": 12
+      }
+    },
+    "easy-name": {
+      "start": {
+        "line": 42,
+        "column": 2
+      },
+      "end": {
+        "line": 42,
+        "column": 12
+      }
+    },
+    "medium-name": {
+      "start": {
+        "line": 43,
+        "column": 2
+      },
+      "end": {
+        "line": 43,
+        "column": 14
+      }
+    },
+    "hard-name": {
+      "start": {
+        "line": 44,
+        "column": 2
+      },
+      "end": {
+        "line": 44,
+        "column": 12
+      }
+    },
+    "diff-desc": {
+      "start": {
+        "line": 45,
+        "column": 2
+      },
+      "end": {
+        "line": 45,
+        "column": 12
+      }
+    },
+    "back-btn": {
+      "start": {
+        "line": 49,
+        "column": 2
+      },
+      "end": {
+        "line": 49,
+        "column": 11
+      }
+    },
+    "back-text": {
+      "start": {
+        "line": 63,
+        "column": 2
+      },
+      "end": {
+        "line": 63,
+        "column": 12
+      }
+    },
+    "uid-1": {
+      "start": {
+        "line": 68,
+        "column": 0
+      },
+      "end": {
+        "line": 85,
+        "column": 6
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 69,
+        "column": 2
+      },
+      "end": {
+        "line": 69,
+        "column": 44
+      }
+    },
+    "uid-3": {
+      "start": {
+        "line": 70,
+        "column": 2
+      },
+      "end": {
+        "line": 73,
+        "column": 8
+      }
+    },
+    "uid-4": {
+      "start": {
+        "line": 71,
+        "column": 4
+      },
+      "end": {
+        "line": 71,
+        "column": 49
+      }
+    },
+    "uid-5": {
+      "start": {
+        "line": 72,
+        "column": 4
+      },
+      "end": {
+        "line": 72,
+        "column": 63
+      }
+    },
+    "uid-6": {
+      "start": {
+        "line": 74,
+        "column": 2
+      },
+      "end": {
+        "line": 77,
+        "column": 8
+      }
+    },
+    "uid-7": {
+      "start": {
+        "line": 75,
+        "column": 4
+      },
+      "end": {
+        "line": 75,
+        "column": 53
+      }
+    },
+    "uid-8": {
+      "start": {
+        "line": 76,
+        "column": 4
+      },
+      "end": {
+        "line": 76,
+        "column": 53
+      }
+    },
+    "uid-9": {
+      "start": {
+        "line": 78,
+        "column": 2
+      },
+      "end": {
+        "line": 81,
+        "column": 8
+      }
+    },
+    "uid-10": {
+      "start": {
+        "line": 79,
+        "column": 4
+      },
+      "end": {
+        "line": 79,
+        "column": 49
+      }
+    },
+    "uid-11": {
+      "start": {
+        "line": 80,
+        "column": 4
+      },
+      "end": {
+        "line": 80,
+        "column": 57
+      }
+    },
+    "uid-12": {
+      "start": {
+        "line": 82,
+        "column": 2
+      },
+      "end": {
+        "line": 84,
+        "column": 8
+      }
+    },
+    "uid-13": {
+      "start": {
+        "line": 83,
+        "column": 4
+      },
+      "end": {
+        "line": 83,
+        "column": 39
+      }
+    }
+  }
+}

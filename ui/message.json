@@ -1,0 +1,90 @@
+{
+  "element": {
+    "type": "container",
+    "sourceTag": "div",
+    "children": [
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "GOAL!"
+        ],
+        "properties": {
+          "id": "msg-text",
+          "class": "msg-text"
+        },
+        "dataUid": "uid-2"
+      }
+    ],
+    "properties": {
+      "class": "msg-panel"
+    },
+    "dataUid": "uid-1"
+  },
+  "classes": {
+    "msg-panel": {
+      "content": {
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "paddingTop": "0.8",
+        "paddingBottom": "0.8",
+        "paddingLeft": "2",
+        "paddingRight": "2",
+        "backgroundColor": "rgba(0, 20, 40, 0.85)",
+        "borderColor": "#00ffcc",
+        "borderWidth": "0.1",
+        "borderRadius": 0.8
+      }
+    },
+    "msg-text": {
+      "content": {
+        "fontSize": "2.5",
+        "color": "#00ffcc",
+        "fontWeight": "bold"
+      }
+    }
+  },
+  "ranges": {
+    "msg-panel": {
+      "start": {
+        "line": 1,
+        "column": 2
+      },
+      "end": {
+        "line": 1,
+        "column": 12
+      }
+    },
+    "msg-text": {
+      "start": {
+        "line": 14,
+        "column": 2
+      },
+      "end": {
+        "line": 14,
+        "column": 11
+      }
+    },
+    "uid-1": {
+      "start": {
+        "line": 20,
+        "column": 0
+      },
+      "end": {
+        "line": 22,
+        "column": 6
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 21,
+        "column": 2
+      },
+      "end": {
+        "line": 21,
+        "column": 51
+      }
+    }
+  }
+}
