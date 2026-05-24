@@ -11,7 +11,7 @@
     border-color: #00ccff;
     border-width: 0.12;
     border-radius: 1.5;
-    gap: 1;
+    gap: 0.8;
   }
   .mode-title {
     font-size: 3;
@@ -22,8 +22,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 0.8;
-    padding-bottom: 0.8;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
     padding-left: 2;
     padding-right: 2;
     background-color: rgba(0, 80, 150, 0.25);
@@ -34,20 +34,20 @@
     width: 85%;
   }
   .mode-name {
-    font-size: 1.8;
+    font-size: 1.7;
     color: #00ddff;
     font-weight: bold;
   }
   .mode-desc {
-    font-size: 1.1;
+    font-size: 1;
     color: #6699aa;
   }
   .back-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 0.6;
-    padding-bottom: 0.6;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
     padding-left: 2;
     padding-right: 2;
     background-color: rgba(80, 40, 40, 0.3);
@@ -55,6 +55,7 @@
     border-width: 0.06;
     border-radius: 0.5;
     cursor: pointer;
+    margin-top: 0.3;
   }
   .back-text {
     font-size: 1.3;
@@ -82,6 +83,10 @@
   <div id="tournament-btn" class="mode-btn" cursor="pointer">
     <span class="mode-name">TOURNAMENT</span>
     <span class="mode-desc">4 rounds, escalating difficulty</span>
+  </div>
+  <div id="practice-btn" class="mode-btn" cursor="pointer">
+    <span class="mode-name">PRACTICE</span>
+    <span class="mode-desc">Free play, no opponent</span>
   </div>
   <div id="mode-back-btn" class="back-btn" cursor="pointer">
     <span class="back-text">BACK</span>

@@ -1,4 +1,4 @@
-// Audio manager for Neon Hockey VR
+// Audio manager for Neon Hockey VR — enhanced with countdown, shield, button sounds
 export class AudioManager {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
@@ -62,6 +62,24 @@ export class AudioManager {
     this.ambientPad.connect(padGain);
     padGain.connect(this.musicGain);
     this.ambientPad.start();
+
+    // High-frequency shimmer
+    const shimmer = this.ctx.createOscillator();
+    shimmer.type = 'sine';
+    shimmer.frequency.value = 4400;
+    const shimmerGain = this.ctx.createGain();
+    shimmerGain.gain.value = 0.008;
+    const shimmerLfo = this.ctx.createOscillator();
+    shimmerLfo.type = 'sine';
+    shimmerLfo.frequency.value = 0.15;
+    const shimmerLfoGain = this.ctx.createGain();
+    shimmerLfoGain.gain.value = 0.006;
+    shimmerLfo.connect(shimmerLfoGain);
+    shimmerLfoGain.connect(shimmerGain.gain);
+    shimmerLfo.start();
+    shimmer.connect(shimmerGain);
+    shimmerGain.connect(this.musicGain);
+    shimmer.start();
   }
 
   adjustVolume(type: string, delta: number) {
@@ -128,7 +146,6 @@ export class AudioManager {
   playGoalScored() {
     this.ensure();
     if (!this.ctx || !this.sfxGain) return;
-    // Ascending arpeggio
     const notes = [523, 659, 784, 1047];
     notes.forEach((freq, i) => {
       setTimeout(() => this.playSFX(freq, 'sawtooth', 0.3, 0.25), i * 80);
@@ -137,7 +154,6 @@ export class AudioManager {
   }
 
   playGoalConceded() {
-    // Descending
     const notes = [400, 300, 200, 150];
     notes.forEach((freq, i) => {
       setTimeout(() => this.playSFX(freq, 'sawtooth', 0.4, 0.2), i * 100);
@@ -178,5 +194,25 @@ export class AudioManager {
   playButtonClick() {
     this.ensure();
     this.playSFX(600, 'sine', 0.06, 0.15);
+  }
+
+  playCountdownTick() {
+    this.ensure();
+    this.playSFX(880, 'sine', 0.15, 0.25);
+    setTimeout(() => this.playSFX(440, 'sine', 0.05, 0.1), 100);
+  }
+
+  playShieldBlock() {
+    this.ensure();
+    // Metallic shield block
+    this.playSFX(200, 'square', 0.15, 0.3);
+    this.playSFX(600, 'sawtooth', 0.1, 0.2);
+    this.playNoise(0.12, 0.2, 1500);
+  }
+
+  playPowerUpExpiring() {
+    this.ensure();
+    // Warning beep
+    this.playSFX(440, 'square', 0.08, 0.15);
   }
 }

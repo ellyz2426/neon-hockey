@@ -1,9 +1,12 @@
 // UI Manager for Neon Hockey VR — all PanelUI, zero HTML DOM
+// Supports: title, mode select (6 modes), difficulty, HUD, message, pause,
+// game over, leaderboard, achievements, settings, help, power-up HUD, countdown
 import {
   PanelUI, PanelDocument, UIKitDocument,
   Follower, FollowBehavior, ScreenSpace, Vector3,
 } from '@iwsdk/core';
 import type { GameState, GameMode, Difficulty } from './index';
+import type { ActiveEffect } from './powerups';
 
 type ClickHandler = (() => void) | null;
 
@@ -94,7 +97,7 @@ export class UIManager {
     this.createPanel('modeselect', '/ui/modeselect.json', {
       position: [0, 1.5, -1.5],
       maxWidth: 1.0,
-      maxHeight: 0.9,
+      maxHeight: 1.0,
     });
 
     // Difficulty select
@@ -118,6 +121,22 @@ export class UIManager {
       maxHeight: 0.08,
       follower: true,
       offsetPosition: [0, 0.05, -0.5],
+    });
+
+    // Power-up HUD — head-following, bottom-left
+    this.createPanel('poweruphud', '/ui/poweruphud.json', {
+      maxWidth: 0.25,
+      maxHeight: 0.15,
+      follower: true,
+      offsetPosition: [-0.25, -0.12, -0.5],
+    });
+
+    // Countdown — head-following, center
+    this.createPanel('countdown', '/ui/countdown.json', {
+      maxWidth: 0.25,
+      maxHeight: 0.25,
+      follower: true,
+      offsetPosition: [0, 0, -0.6],
     });
 
     // Pause
@@ -199,13 +218,14 @@ export class UIManager {
     this.wireBtn(titleDoc, 'settings-btn', () => this.onShowSettings?.());
     this.wireBtn(titleDoc, 'help-btn', () => this.onShowHelp?.());
 
-    // Mode select
+    // Mode select (now 6 modes)
     const modeDoc = this.getDoc('modeselect');
     this.wireBtn(modeDoc, 'classic-btn', () => this.onSetMode?.('classic'));
     this.wireBtn(modeDoc, 'timed-btn', () => this.onSetMode?.('timed'));
     this.wireBtn(modeDoc, 'powerup-btn', () => this.onSetMode?.('powerup'));
     this.wireBtn(modeDoc, 'survival-btn', () => this.onSetMode?.('survival'));
     this.wireBtn(modeDoc, 'tournament-btn', () => this.onSetMode?.('tournament'));
+    this.wireBtn(modeDoc, 'practice-btn', () => this.onSetMode?.('practice'));
     this.wireBtn(modeDoc, 'mode-back-btn', () => this.onBack?.());
 
     // Difficulty
@@ -255,12 +275,14 @@ export class UIManager {
 
   setState(state: GameState) {
     this.currentState = state;
-    const panels = ['title', 'modeselect', 'difficulty', 'hud', 'message', 'pause', 'gameover', 'leaderboard', 'achievements', 'settings', 'help'];
-    const visible: Record<GameState, string[]> = {
+    const panels = ['title', 'modeselect', 'difficulty', 'hud', 'message', 'pause',
+      'gameover', 'leaderboard', 'achievements', 'settings', 'help', 'poweruphud', 'countdown'];
+    const visible: Record<string, string[]> = {
       'title': ['title'],
       'modeselect': ['modeselect'],
       'difficulty': ['difficulty'],
       'playing': ['hud'],
+      'countdown': ['hud', 'countdown'],
       'paused': ['hud', 'pause'],
       'gameover': ['gameover'],
       'leaderboard': ['leaderboard'],
@@ -292,6 +314,40 @@ export class UIManager {
     }
   }
 
+  showCountdown(number: string) {
+    const doc = this.getDoc('countdown');
+    this.setText(doc, 'countdown-text', number);
+  }
+
+  showPowerUpHud(show: boolean) {
+    const entity = this.entities.get('poweruphud');
+    if (entity && entity.object3D) {
+      entity.object3D.visible = show;
+    }
+  }
+
+  updatePowerUpHUD(effects: ActiveEffect[]) {
+    const doc = this.getDoc('poweruphud');
+    if (!doc) return;
+
+    const show = effects.length > 0;
+    this.showPowerUpHud(show);
+    if (!show) return;
+
+    for (let i = 0; i < 3; i++) {
+      const effect = effects[i];
+      if (effect) {
+        this.setText(doc, `pu-icon-${i}`, effect.type.icon);
+        this.setText(doc, `pu-name-${i}`, effect.type.name);
+        this.setText(doc, `pu-timer-${i}`, `${Math.ceil(effect.remaining)}s`);
+      } else {
+        this.setText(doc, `pu-icon-${i}`, '');
+        this.setText(doc, `pu-name-${i}`, '');
+        this.setText(doc, `pu-timer-${i}`, '');
+      }
+    }
+  }
+
   updateHUD(playerScore: number, cpuScore: number, time: number, combo: number, mode: GameMode, timedSecs: number, survivalBalls: number) {
     const doc = this.getDoc('hud');
     if (!doc) return;
@@ -302,6 +358,8 @@ export class UIManager {
       this.setText(doc, 'info-text', `Time: ${Math.ceil(timedSecs)}s`);
     } else if (mode === 'survival') {
       this.setText(doc, 'info-text', `Lives: ${survivalBalls}`);
+    } else if (mode === 'practice') {
+      this.setText(doc, 'info-text', `Free Play`);
     } else if (combo > 1) {
       this.setText(doc, 'info-text', `Combo x${combo.toFixed(1)}`);
     } else {

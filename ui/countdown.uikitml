@@ -1,0 +1,21 @@
+<!-- ui/countdown.uikitml — Pre-game countdown -->
+<style>
+  .countdown-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-color: #00ccff;
+    border-width: 0.15;
+    border-radius: 2;
+  }
+  .countdown-text {
+    font-size: 10;
+    color: #00ccff;
+    font-weight: bold;
+  }
+</style>
+<div class="countdown-panel">
+  <span id="countdown-text" class="countdown-text">3</span>
+</div>

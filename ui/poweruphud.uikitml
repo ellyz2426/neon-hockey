@@ -1,0 +1,50 @@
+<!-- ui/poweruphud.uikitml — Active power-up indicator -->
+<style>
+  .pu-hud {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3;
+    padding: 1;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.15);
+    border-width: 0.05;
+    border-radius: 0.5;
+  }
+  .pu-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5;
+  }
+  .pu-icon {
+    font-size: 2;
+    color: #ffffff;
+  }
+  .pu-name {
+    font-size: 1.2;
+    color: #cccccc;
+  }
+  .pu-timer {
+    font-size: 1.4;
+    color: #ffcc00;
+    font-weight: bold;
+    margin-left: auto;
+  }
+</style>
+<div class="pu-hud">
+  <div class="pu-row">
+    <span id="pu-icon-0" class="pu-icon"></span>
+    <span id="pu-name-0" class="pu-name"></span>
+    <span id="pu-timer-0" class="pu-timer"></span>
+  </div>
+  <div class="pu-row">
+    <span id="pu-icon-1" class="pu-icon"></span>
+    <span id="pu-name-1" class="pu-name"></span>
+    <span id="pu-timer-1" class="pu-timer"></span>
+  </div>
+  <div class="pu-row">
+    <span id="pu-icon-2" class="pu-icon"></span>
+    <span id="pu-name-2" class="pu-name"></span>
+    <span id="pu-timer-2" class="pu-timer"></span>
+  </div>
+</div>

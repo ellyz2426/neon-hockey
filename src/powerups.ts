@@ -1,26 +1,27 @@
-// Power-up system for Neon Hockey VR
+// Power-up system for Neon Hockey VR — fully implemented effects
 import {
-  Group, Mesh, SphereGeometry, CylinderGeometry, TorusGeometry,
-  MeshStandardMaterial, MeshBasicMaterial, Color, AdditiveBlending,
+  Group, Mesh, SphereGeometry, CylinderGeometry, TorusGeometry, RingGeometry,
+  MeshStandardMaterial, MeshBasicMaterial, Color, AdditiveBlending, DoubleSide,
 } from '@iwsdk/core';
 import { TableTheme } from './themes';
 
 export interface PowerUpType {
   name: string;
-  type: 'speed' | 'shield' | 'magnet' | 'multi' | 'shrink' | 'giant';
+  type: 'speed' | 'shield' | 'magnet' | 'shrink' | 'giant';
   color: string;
   duration: number;
+  icon: string;
 }
 
 const POWER_UP_TYPES: PowerUpType[] = [
-  { name: 'Speed Boost', type: 'speed', color: '#ffaa00', duration: 5 },
-  { name: 'Shield', type: 'shield', color: '#00ffaa', duration: 8 },
-  { name: 'Puck Magnet', type: 'magnet', color: '#ff44ff', duration: 6 },
-  { name: 'Shrink Opponent', type: 'shrink', color: '#ff4444', duration: 7 },
-  { name: 'Giant Mallet', type: 'giant', color: '#44ff44', duration: 6 },
+  { name: 'Speed Boost', type: 'speed', color: '#ffaa00', duration: 5, icon: '⚡' },
+  { name: 'Shield', type: 'shield', color: '#00ffaa', duration: 8, icon: '🛡' },
+  { name: 'Puck Magnet', type: 'magnet', color: '#ff44ff', duration: 6, icon: '🧲' },
+  { name: 'Shrink Opponent', type: 'shrink', color: '#ff4444', duration: 7, icon: '🔻' },
+  { name: 'Giant Mallet', type: 'giant', color: '#44ff44', duration: 6, icon: '🔷' },
 ];
 
-interface ActivePowerUp {
+interface SpawnedPowerUp {
   mesh: Group;
   glow: Mesh;
   type: PowerUpType;
@@ -30,14 +31,33 @@ interface ActivePowerUp {
   bobPhase: number;
 }
 
+export interface ActiveEffect {
+  type: PowerUpType;
+  remaining: number;
+  duration: number;
+}
+
 export class PowerUpManager {
   private parent: Group;
   private tableW: number;
   private tableL: number;
   private theme: TableTheme;
-  private active: ActivePowerUp[] = [];
+  private spawned: SpawnedPowerUp[] = [];
   private spawnTimer = 0;
   private spawnInterval = 6;
+
+  // Active effects
+  activeEffects: ActiveEffect[] = [];
+
+  // Shield visual
+  private shieldMesh: Mesh | null = null;
+
+  // Mallet scale modifiers
+  playerMalletScale = 1.0;
+  cpuMalletScale = 1.0;
+
+  // Magnet strength
+  magnetActive = false;
 
   constructor(parent: Group, tableW: number, tableL: number, theme: TableTheme) {
     this.parent = parent;
@@ -53,12 +73,20 @@ export class PowerUpManager {
   }
 
   clearAll() {
-    for (const p of this.active) {
+    for (const p of this.spawned) {
       this.parent.remove(p.mesh);
       this.parent.remove(p.glow);
     }
-    this.active = [];
+    this.spawned = [];
     this.spawnTimer = 0;
+    this.activeEffects = [];
+    this.playerMalletScale = 1.0;
+    this.cpuMalletScale = 1.0;
+    this.magnetActive = false;
+    if (this.shieldMesh) {
+      this.parent.remove(this.shieldMesh);
+      this.shieldMesh = null;
+    }
   }
 
   private spawn() {
@@ -99,21 +127,107 @@ export class PowerUpManager {
     glow.position.set(x, 0.04, z);
     this.parent.add(glow);
 
-    this.active.push({ mesh: group, glow, type, x, z, age: 0, bobPhase: Math.random() * Math.PI * 2 });
+    this.spawned.push({ mesh: group, glow, type, x, z, age: 0, bobPhase: Math.random() * Math.PI * 2 });
+  }
+
+  activateEffect(type: PowerUpType) {
+    // Remove existing effect of same type
+    this.activeEffects = this.activeEffects.filter(e => e.type.type !== type.type);
+    this.activeEffects.push({ type, remaining: type.duration, duration: type.duration });
+
+    switch (type.type) {
+      case 'shield':
+        this.createShield();
+        break;
+      case 'magnet':
+        this.magnetActive = true;
+        break;
+      case 'shrink':
+        this.cpuMalletScale = 0.6;
+        break;
+      case 'giant':
+        this.playerMalletScale = 1.6;
+        break;
+    }
+  }
+
+  private createShield() {
+    if (this.shieldMesh) this.parent.remove(this.shieldMesh);
+    const geo = new RingGeometry(0.16, 0.18, 24);
+    const mat = new MeshBasicMaterial({
+      color: new Color('#00ffaa'),
+      transparent: true,
+      opacity: 0.5,
+      side: DoubleSide,
+      blending: AdditiveBlending,
+    });
+    this.shieldMesh = new Mesh(geo, mat);
+    this.shieldMesh.rotation.x = -Math.PI / 2;
+    // Position will be updated in updateShield
+    this.parent.add(this.shieldMesh);
+  }
+
+  isShieldActive(): boolean {
+    return this.activeEffects.some(e => e.type.type === 'shield');
+  }
+
+  /** Move shield to follow the player goal zone */
+  updateShieldPosition(goalZ: number) {
+    if (this.shieldMesh) {
+      this.shieldMesh.position.set(0, 0.01, goalZ);
+    }
+  }
+
+  updateEffects(dt: number) {
+    for (let i = this.activeEffects.length - 1; i >= 0; i--) {
+      const effect = this.activeEffects[i];
+      effect.remaining -= dt;
+      if (effect.remaining <= 0) {
+        // Remove effect
+        switch (effect.type.type) {
+          case 'shield':
+            if (this.shieldMesh) {
+              this.parent.remove(this.shieldMesh);
+              this.shieldMesh = null;
+            }
+            break;
+          case 'magnet':
+            this.magnetActive = false;
+            break;
+          case 'shrink':
+            this.cpuMalletScale = 1.0;
+            break;
+          case 'giant':
+            this.playerMalletScale = 1.0;
+            break;
+        }
+        this.activeEffects.splice(i, 1);
+      }
+    }
+
+    // Pulse shield
+    if (this.shieldMesh) {
+      const t = performance.now() / 1000;
+      (this.shieldMesh.material as any).opacity = 0.3 + Math.sin(t * 4) * 0.2;
+      this.shieldMesh.scale.setScalar(1 + Math.sin(t * 2) * 0.05);
+    }
   }
 
   update(dt: number, puckX: number, puckZ: number, malletX: number, malletZ: number): PowerUpType | null {
+    // Update active effects
+    this.updateEffects(dt);
+
     // Spawn timer
     this.spawnTimer -= dt;
-    if (this.spawnTimer <= 0 && this.active.length < 3) {
+    if (this.spawnTimer <= 0 && this.spawned.length < 3) {
       this.spawn();
       this.spawnTimer = this.spawnInterval;
     }
 
     let collected: PowerUpType | null = null;
 
-    for (let i = this.active.length - 1; i >= 0; i--) {
-      const p = this.active[i];
+    for (let i = this.spawned.length - 1; i >= 0; i--) {
+      const p = this.spawned[i];
       p.age += dt;
       p.bobPhase += dt * 3;
 
@@ -137,7 +251,7 @@ export class PowerUpManager {
         collected = p.type;
         this.parent.remove(p.mesh);
         this.parent.remove(p.glow);
-        this.active.splice(i, 1);
+        this.spawned.splice(i, 1);
         continue;
       }
 
@@ -145,7 +259,7 @@ export class PowerUpManager {
       if (p.age > 10) {
         this.parent.remove(p.mesh);
         this.parent.remove(p.glow);
-        this.active.splice(i, 1);
+        this.spawned.splice(i, 1);
       }
     }
 

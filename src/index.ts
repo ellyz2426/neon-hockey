@@ -45,17 +45,9 @@ import { Environment } from './environment';
 import { TableThemes, TableTheme } from './themes';
 
 // ─── TYPES ───
-export type GameState = 'title' | 'modeselect' | 'difficulty' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help';
-export type GameMode = 'classic' | 'timed' | 'powerup' | 'survival' | 'tournament';
+export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help';
+export type GameMode = 'classic' | 'timed' | 'powerup' | 'survival' | 'tournament' | 'practice';
 export type Difficulty = 'easy' | 'medium' | 'hard';
-
-interface PuckState {
-  mesh: Mesh;
-  glow: Mesh;
-  vx: number;
-  vy: number;
-  active: boolean;
-}
 
 interface Stats {
   totalGames: number;
@@ -69,9 +61,9 @@ interface Stats {
 }
 
 // ─── CONSTANTS ───
-const TABLE_WIDTH = 1.2;   // X (left/right)
-const TABLE_LENGTH = 2.0;  // Z (front/back)
-const TABLE_HEIGHT = 0.9;  // Y (floor to surface)
+const TABLE_WIDTH = 1.2;
+const TABLE_LENGTH = 2.0;
+const TABLE_HEIGHT = 0.9;
 const RAIL_HEIGHT = 0.06;
 const RAIL_WIDTH = 0.05;
 const PUCK_RADIUS = 0.04;
@@ -93,7 +85,7 @@ async function main() {
     features: {
       grabbing: true,
       locomotion: false,
-      physics: false, // custom 2D physics
+      physics: false,
       spatialUI: true,
     },
     render: {
@@ -119,10 +111,12 @@ async function main() {
   let comboMultiplier = 1;
   let comboTimer = 0;
   let goalCooldown = 0;
-  let lastGoalTime = 0;
   let isPowerUpMode = false;
   let currentThemeIndex = 0;
   let achievementsUnlocked: Set<string> = new Set();
+  let countdownValue = 3;
+  let countdownTimer = 0;
+  let isPracticeMode = false;
 
   // Load saved state
   const savedTheme = localStorage.getItem('neon-hockey-theme');
@@ -188,6 +182,22 @@ async function main() {
   centerDot.position.y = 0.001;
   tableGroup.add(centerDot);
 
+  // Face-off circles (decorative dots at quarter positions)
+  const faceOffDotGeo = new CylinderGeometry(0.008, 0.008, 0.002, 12);
+  const faceOffDotMat = new MeshBasicMaterial({ color: new Color(theme.accentColor), transparent: true, opacity: 0.4 });
+  for (const [fx, fz] of [[-0.3, -0.5], [0.3, -0.5], [-0.3, 0.5], [0.3, 0.5]]) {
+    const dot = new Mesh(faceOffDotGeo, faceOffDotMat);
+    dot.position.set(fx, 0.001, fz);
+    tableGroup.add(dot);
+    // Ring around dot
+    const ring = new Mesh(new RingGeometry(0.04, 0.045, 16), new MeshBasicMaterial({
+      color: new Color(theme.accentColor), transparent: true, opacity: 0.2, side: DoubleSide,
+    }));
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(fx, 0.001, fz);
+    tableGroup.add(ring);
+  }
+
   // Rails
   const rails: Mesh[] = [];
   function createRail(x: number, z: number, w: number, d: number) {
@@ -203,7 +213,6 @@ async function main() {
     rail.position.set(x, RAIL_HEIGHT / 2, z);
     tableGroup.add(rail);
 
-    // Wireframe edge
     const edges = new EdgesGeometry(geo);
     const line = new LineSegments(edges, new LineBasicMaterial({ color: new Color(theme.accentColor), transparent: true, opacity: 0.5 }));
     line.position.copy(rail.position);
@@ -213,7 +222,7 @@ async function main() {
     return rail;
   }
 
-  // Side rails (full length)
+  // Side rails
   createRail(-TABLE_WIDTH / 2 - RAIL_WIDTH / 2, 0, RAIL_WIDTH, TABLE_LENGTH + RAIL_WIDTH * 2);
   createRail(TABLE_WIDTH / 2 + RAIL_WIDTH / 2, 0, RAIL_WIDTH, TABLE_LENGTH + RAIL_WIDTH * 2);
 
@@ -226,7 +235,7 @@ async function main() {
   createRail(-TABLE_WIDTH / 2 + sideSegWidth / 2, TABLE_LENGTH / 2 + RAIL_WIDTH / 2, sideSegWidth, RAIL_WIDTH);
   createRail(TABLE_WIDTH / 2 - sideSegWidth / 2, TABLE_LENGTH / 2 + RAIL_WIDTH / 2, sideSegWidth, RAIL_WIDTH);
 
-  // Goal zones (visual glow strips)
+  // Goal zones
   for (const zSide of [-1, 1]) {
     const goalGeo = new PlaneGeometry(GOAL_WIDTH, 0.04);
     const goalMat = new MeshBasicMaterial({
@@ -295,7 +304,6 @@ async function main() {
   playerMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, TABLE_LENGTH * 0.35);
   tableGroup.add(playerMallet);
 
-  // Player mallet ring
   const playerRingGeo = new RingGeometry(MALLET_RADIUS, MALLET_RADIUS + 0.008, 24);
   const playerRingMat = new MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.5, side: DoubleSide });
   const playerRing = new Mesh(playerRingGeo, playerRingMat);
@@ -321,8 +329,6 @@ async function main() {
   cpuRing.position.set(0, MALLET_HEIGHT + 0.004, -TABLE_LENGTH * 0.35);
   tableGroup.add(cpuRing);
 
-  let cpuMalletTargetX = 0;
-  let cpuMalletTargetZ = -TABLE_LENGTH * 0.35;
   let prevPlayerMalletX = 0;
   let prevPlayerMalletZ = TABLE_LENGTH * 0.35;
 
@@ -348,6 +354,9 @@ async function main() {
     container.addEventListener('pointerup', () => { isPointerDown = false; });
   }
 
+  // ─── BASE CAMERA POSITION (for shake) ───
+  const baseCameraPos = new Vector3(0, 1.6, 0.8);
+
   // ─── HELPER FUNCTIONS ───
   function resetPuck() {
     puck.position.set(0, PUCK_HEIGHT / 2 + 0.002, 0);
@@ -355,6 +364,14 @@ async function main() {
     puckVx = 0;
     puckVz = 0;
     goalCooldown = 1.0;
+  }
+
+  function startCountdown() {
+    countdownValue = 3;
+    countdownTimer = 0;
+    changeState('countdown');
+    ui.showCountdown('3');
+    audio.playCountdownTick();
   }
 
   function startGame() {
@@ -365,14 +382,54 @@ async function main() {
     comboMultiplier = 1;
     comboTimer = 0;
     survivalBalls = 3;
+    timedSeconds = 60;
     isPowerUpMode = gameMode === 'powerup';
+    isPracticeMode = gameMode === 'practice';
     resetPuck();
     playerMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, TABLE_LENGTH * 0.35);
     cpuMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, -TABLE_LENGTH * 0.35);
     powerUps.clearAll();
     if (isPowerUpMode) powerUps.scheduleSpawn();
+
+    // Hide CPU in practice mode
+    cpuMallet.visible = !isPracticeMode;
+    cpuRing.visible = !isPracticeMode;
+
+    // Reset mallet scales
+    playerMallet.scale.setScalar(1);
+    cpuMallet.scale.setScalar(1);
+    playerRing.scale.setScalar(1);
+    cpuRing.scale.setScalar(1);
+
     audio.playGameStart();
     changeState('playing');
+  }
+
+  function startGameWithCountdown() {
+    playerScore = 0;
+    cpuScore = 0;
+    currentStreak = 0;
+    gameTime = 0;
+    comboMultiplier = 1;
+    comboTimer = 0;
+    survivalBalls = 3;
+    timedSeconds = 60;
+    isPowerUpMode = gameMode === 'powerup';
+    isPracticeMode = gameMode === 'practice';
+    resetPuck();
+    playerMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, TABLE_LENGTH * 0.35);
+    cpuMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, -TABLE_LENGTH * 0.35);
+    powerUps.clearAll();
+
+    cpuMallet.visible = !isPracticeMode;
+    cpuRing.visible = !isPracticeMode;
+
+    playerMallet.scale.setScalar(1);
+    cpuMallet.scale.setScalar(1);
+    playerRing.scale.setScalar(1);
+    cpuRing.scale.setScalar(1);
+
+    startCountdown();
   }
 
   function endGame(won: boolean) {
@@ -384,21 +441,19 @@ async function main() {
     if (playerScore > stats.bestScore) stats.bestScore = playerScore;
     stats.totalPlayTime += gameTime;
     saveStats();
+    saveToLeaderboard();
 
-    // Check achievements
     checkAchievements(won);
 
     if (gameMode === 'tournament') {
       if (won) {
         tournamentWins++;
         if (tournamentRound < 3) {
-          // Next tournament round
           tournamentRound++;
           ui.showMessage(`Round ${tournamentRound + 1}!`, 2000);
-          setTimeout(() => startGame(), 2500);
+          setTimeout(() => startGameWithCountdown(), 2500);
           return;
         }
-        // Tournament won!
         unlockAchievement('tournament_champion');
       }
     }
@@ -415,6 +470,15 @@ async function main() {
 
   function onGoal(playerScored: boolean) {
     if (goalCooldown > 0) return;
+
+    // Shield check — blocks goals against player
+    if (!playerScored && powerUps.isShieldActive()) {
+      puckVz = -Math.abs(puckVz) * 1.2; // Bounce back hard
+      effects.shieldBlockEffect(puck.position.x, TABLE_LENGTH / 2);
+      audio.playShieldBlock();
+      ui.showMessage('SHIELD BLOCK!', 1200);
+      return;
+    }
 
     if (playerScored) {
       playerScore++;
@@ -434,7 +498,16 @@ async function main() {
       audio.playGoalConceded();
     }
 
+    // Notify AI for adaptive difficulty
+    ai.onGoal(playerScored);
+
     ui.updateHUD(playerScore, cpuScore, gameTime, comboMultiplier, gameMode, timedSeconds, survivalBalls);
+
+    // Practice mode: no win condition, just reset
+    if (isPracticeMode) {
+      resetPuck();
+      return;
+    }
 
     // Check win condition
     if (gameMode === 'classic' || gameMode === 'powerup' || gameMode === 'tournament') {
@@ -512,21 +585,33 @@ async function main() {
   }
 
   // ─── UI CALLBACKS ───
-  ui.onStartGame = () => startGame();
+  ui.onStartGame = () => startGameWithCountdown();
   ui.onModeSelect = () => changeState('modeselect');
-  ui.onSetMode = (mode: GameMode) => { gameMode = mode; changeState('difficulty'); };
+  ui.onSetMode = (mode: GameMode) => {
+    gameMode = mode;
+    if (mode === 'practice') {
+      // Practice mode: skip difficulty select, use easy AI or no AI
+      difficulty = 'easy';
+      ai.setDifficulty('easy');
+      startGameWithCountdown();
+    } else {
+      changeState('difficulty');
+    }
+  };
   ui.onSetDifficulty = (diff: Difficulty) => {
     difficulty = diff;
     ai.setDifficulty(diff);
     if (gameMode === 'tournament') { tournamentRound = 0; tournamentWins = 0; }
-    startGame();
+    startGameWithCountdown();
   };
   ui.onResume = () => changeState('playing');
   ui.onQuit = () => {
     powerUps.clearAll();
+    cpuMallet.visible = true;
+    cpuRing.visible = true;
     changeState('title');
   };
-  ui.onRematch = () => startGame();
+  ui.onRematch = () => startGameWithCountdown();
   ui.onShowLeaderboard = () => {
     const entries = JSON.parse(localStorage.getItem('neon-hockey-leaderboard') || '[]');
     ui.updateLeaderboard(entries);
@@ -565,11 +650,29 @@ async function main() {
     const dt = Math.min((now - prevTime) / 1000, 0.05);
     prevTime = now;
 
-    // Update effects
+    // Update effects & environment always
     effects.update(dt);
     env.update(dt);
 
     if (goalCooldown > 0) goalCooldown -= dt;
+
+    // ─── COUNTDOWN STATE ───
+    if (gameState === 'countdown') {
+      countdownTimer += dt;
+      if (countdownTimer >= 1) {
+        countdownTimer -= 1;
+        countdownValue--;
+        if (countdownValue <= 0) {
+          if (isPowerUpMode) powerUps.scheduleSpawn();
+          audio.playGameStart();
+          changeState('playing');
+        } else {
+          ui.showCountdown(String(countdownValue));
+          audio.playCountdownTick();
+        }
+      }
+      return;
+    }
 
     if (gameState !== 'playing') return;
 
@@ -587,11 +690,28 @@ async function main() {
     // Timed mode countdown
     if (gameMode === 'timed') {
       timedSeconds -= dt;
+      // Beep on last 5 seconds
+      if (timedSeconds <= 5 && timedSeconds > 0) {
+        const sec = Math.ceil(timedSeconds);
+        const prevSec = Math.ceil(timedSeconds + dt);
+        if (sec !== prevSec) audio.playCountdownTick();
+      }
       if (timedSeconds <= 0) {
         endGame(playerScore > cpuScore);
         return;
       }
     }
+
+    // ─── Apply mallet scale from power-ups ───
+    const pScale = powerUps.playerMalletScale;
+    const cScale = powerUps.cpuMalletScale;
+    playerMallet.scale.setScalar(pScale);
+    playerRing.scale.setScalar(pScale);
+    cpuMallet.scale.setScalar(cScale);
+    cpuRing.scale.setScalar(cScale);
+
+    const effectiveMalletR = MALLET_RADIUS * pScale;
+    const effectiveCpuMalletR = MALLET_RADIUS * cScale;
 
     // ─── Player mallet control (browser) ───
     const camera = (world as any).renderer?.xr?.isPresenting ? null : (world as any).camera;
@@ -600,9 +720,8 @@ async function main() {
       const hits = raycaster.intersectObject(tablePlaneMesh);
       if (hits.length > 0) {
         const point = tableGroup.worldToLocal(hits[0].point.clone());
-        // Constrain to player half (positive Z)
-        const targetX = Math.max(-TABLE_WIDTH / 2 + MALLET_RADIUS, Math.min(TABLE_WIDTH / 2 - MALLET_RADIUS, point.x));
-        const targetZ = Math.max(0.05, Math.min(TABLE_LENGTH / 2 - MALLET_RADIUS, point.z));
+        const targetX = Math.max(-TABLE_WIDTH / 2 + effectiveMalletR, Math.min(TABLE_WIDTH / 2 - effectiveMalletR, point.x));
+        const targetZ = Math.max(0.05, Math.min(TABLE_LENGTH / 2 - effectiveMalletR, point.z));
 
         prevPlayerMalletX = playerMallet.position.x;
         prevPlayerMalletZ = playerMallet.position.z;
@@ -611,6 +730,14 @@ async function main() {
         playerRing.position.x = playerMallet.position.x;
         playerRing.position.z = playerMallet.position.z;
       }
+
+      // Screen shake
+      const shake = effects.getShakeOffset();
+      camera.position.set(
+        baseCameraPos.x + shake.x,
+        baseCameraPos.y + shake.y,
+        baseCameraPos.z + shake.z,
+      );
     }
 
     // ─── VR controller input ───
@@ -622,8 +749,8 @@ async function main() {
         rSpace.object3D.getWorldPosition(gripPos);
         const localPos = tableGroup.worldToLocal(gripPos.clone());
 
-        const targetX = Math.max(-TABLE_WIDTH / 2 + MALLET_RADIUS, Math.min(TABLE_WIDTH / 2 - MALLET_RADIUS, localPos.x));
-        const targetZ = Math.max(0.05, Math.min(TABLE_LENGTH / 2 - MALLET_RADIUS, localPos.z));
+        const targetX = Math.max(-TABLE_WIDTH / 2 + effectiveMalletR, Math.min(TABLE_WIDTH / 2 - effectiveMalletR, localPos.x));
+        const targetZ = Math.max(0.05, Math.min(TABLE_LENGTH / 2 - effectiveMalletR, localPos.z));
 
         prevPlayerMalletX = playerMallet.position.x;
         prevPlayerMalletZ = playerMallet.position.z;
@@ -633,7 +760,6 @@ async function main() {
         playerRing.position.z = playerMallet.position.z;
       }
 
-      // Pause
       if (rightGamepad.getButtonDown(InputComponent.B_Button)) {
         changeState('paused');
       }
@@ -644,40 +770,55 @@ async function main() {
       changeState('paused');
     }
 
-    // ─── AI Mallet Control ───
-    const aiMove = ai.update(dt, puck.position.x, puck.position.z, puckVx, puckVz,
-      cpuMallet.position.x, cpuMallet.position.z, TABLE_WIDTH, TABLE_LENGTH, MALLET_RADIUS);
-    const prevCpuX = cpuMallet.position.x;
-    const prevCpuZ = cpuMallet.position.z;
-    cpuMallet.position.x += (aiMove.x - cpuMallet.position.x) * 0.15;
-    cpuMallet.position.z += (aiMove.z - cpuMallet.position.z) * 0.15;
-    // Constrain CPU to its half (negative Z)
-    cpuMallet.position.z = Math.max(-TABLE_LENGTH / 2 + MALLET_RADIUS, Math.min(-0.05, cpuMallet.position.z));
-    cpuMallet.position.x = Math.max(-TABLE_WIDTH / 2 + MALLET_RADIUS, Math.min(TABLE_WIDTH / 2 - MALLET_RADIUS, cpuMallet.position.x));
-    cpuRing.position.x = cpuMallet.position.x;
-    cpuRing.position.z = cpuMallet.position.z;
+    // ─── AI Mallet Control (skip in practice mode) ───
+    if (!isPracticeMode) {
+      const aiMove = ai.update(dt, puck.position.x, puck.position.z, puckVx, puckVz,
+        cpuMallet.position.x, cpuMallet.position.z, TABLE_WIDTH, TABLE_LENGTH, effectiveCpuMalletR);
+      const prevCpuX = cpuMallet.position.x;
+      const prevCpuZ = cpuMallet.position.z;
+      cpuMallet.position.x += (aiMove.x - cpuMallet.position.x) * 0.15;
+      cpuMallet.position.z += (aiMove.z - cpuMallet.position.z) * 0.15;
+      cpuMallet.position.z = Math.max(-TABLE_LENGTH / 2 + effectiveCpuMalletR, Math.min(-0.05, cpuMallet.position.z));
+      cpuMallet.position.x = Math.max(-TABLE_WIDTH / 2 + effectiveCpuMalletR, Math.min(TABLE_WIDTH / 2 - effectiveCpuMalletR, cpuMallet.position.x));
+      cpuRing.position.x = cpuMallet.position.x;
+      cpuRing.position.z = cpuMallet.position.z;
+
+      // CPU mallet collision (used in puck physics below)
+      var prevCpuMalletX = prevCpuX;
+      var prevCpuMalletZ = prevCpuZ;
+    }
 
     // ─── PUCK PHYSICS ───
-    // Substeps for stability
+    // Magnet effect — gently pull puck toward player mallet
+    if (powerUps.magnetActive) {
+      const mdx = playerMallet.position.x - puck.position.x;
+      const mdz = playerMallet.position.z - puck.position.z;
+      const mDist = Math.sqrt(mdx * mdx + mdz * mdz);
+      if (mDist > 0.08 && mDist < 0.6) {
+        const pullStrength = 0.4 * (1 - mDist / 0.6);
+        puckVx += (mdx / mDist) * pullStrength * dt * 10;
+        puckVz += (mdz / mDist) * pullStrength * dt * 10;
+      }
+    }
+
     const substeps = 4;
     const subDt = dt / substeps;
     for (let s = 0; s < substeps; s++) {
       puck.position.x += puckVx * subDt;
       puck.position.z += puckVz * subDt;
 
-      // Wall bounces (left/right)
+      // Wall bounces
       const halfW = TABLE_WIDTH / 2 - PUCK_RADIUS;
       if (puck.position.x < -halfW) { puck.position.x = -halfW; puckVx = Math.abs(puckVx); audio.playWallHit(); effects.wallSpark(puck.position.x, puck.position.z); }
       if (puck.position.x > halfW) { puck.position.x = halfW; puckVx = -Math.abs(puckVx); audio.playWallHit(); effects.wallSpark(puck.position.x, puck.position.z); }
 
-      // Top/bottom walls + goal detection
       const halfL = TABLE_LENGTH / 2 - PUCK_RADIUS;
       const goalHalfW = GOAL_WIDTH / 2;
 
       // CPU goal (negative Z)
       if (puck.position.z < -halfL) {
         if (Math.abs(puck.position.x) < goalHalfW) {
-          onGoal(true); // Player scored
+          onGoal(true);
           break;
         } else {
           puck.position.z = -halfL;
@@ -690,7 +831,7 @@ async function main() {
       // Player goal (positive Z)
       if (puck.position.z > halfL) {
         if (Math.abs(puck.position.x) < goalHalfW) {
-          onGoal(false); // CPU scored
+          onGoal(false);
           break;
         } else {
           puck.position.z = halfL;
@@ -704,21 +845,17 @@ async function main() {
       const dxP = puck.position.x - playerMallet.position.x;
       const dzP = puck.position.z - playerMallet.position.z;
       const distP = Math.sqrt(dxP * dxP + dzP * dzP);
-      const minDistP = PUCK_RADIUS + MALLET_RADIUS;
+      const minDistP = PUCK_RADIUS + effectiveMalletR;
       if (distP < minDistP && distP > 0.001) {
         const nx = dxP / distP;
         const nz = dzP / distP;
-        // Push out
         puck.position.x = playerMallet.position.x + nx * minDistP;
         puck.position.z = playerMallet.position.z + nz * minDistP;
-        // Mallet velocity contribution
         const malletVx = (playerMallet.position.x - prevPlayerMalletX) / subDt;
         const malletVz = (playerMallet.position.z - prevPlayerMalletZ) / subDt;
-        // Reflect + add mallet velocity
         const relVn = puckVx * nx + puckVz * nz;
         puckVx = puckVx - 2 * relVn * nx + malletVx * 0.6;
         puckVz = puckVz - 2 * relVn * nz + malletVz * 0.6;
-        // Clamp speed
         const spd = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
         if (spd > MAX_PUCK_SPEED) {
           puckVx = (puckVx / spd) * MAX_PUCK_SPEED;
@@ -728,34 +865,35 @@ async function main() {
         effects.malletHitEffect(puck.position.x, puck.position.z, true);
       }
 
-      // CPU mallet collision
-      const dxC = puck.position.x - cpuMallet.position.x;
-      const dzC = puck.position.z - cpuMallet.position.z;
-      const distC = Math.sqrt(dxC * dxC + dzC * dzC);
-      const minDistC = PUCK_RADIUS + MALLET_RADIUS;
-      if (distC < minDistC && distC > 0.001) {
-        const nx = dxC / distC;
-        const nz = dzC / distC;
-        puck.position.x = cpuMallet.position.x + nx * minDistC;
-        puck.position.z = cpuMallet.position.z + nz * minDistC;
-        const cpuVx = (cpuMallet.position.x - prevCpuX) / subDt;
-        const cpuVz = (cpuMallet.position.z - prevCpuZ) / subDt;
-        const relVn = puckVx * nx + puckVz * nz;
-        puckVx = puckVx - 2 * relVn * nx + cpuVx * 0.6;
-        puckVz = puckVz - 2 * relVn * nz + cpuVz * 0.6;
-        const spd = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
-        if (spd > MAX_PUCK_SPEED) {
-          puckVx = (puckVx / spd) * MAX_PUCK_SPEED;
-          puckVz = (puckVz / spd) * MAX_PUCK_SPEED;
+      // CPU mallet collision (only if not practice mode)
+      if (!isPracticeMode) {
+        const dxC = puck.position.x - cpuMallet.position.x;
+        const dzC = puck.position.z - cpuMallet.position.z;
+        const distC = Math.sqrt(dxC * dxC + dzC * dzC);
+        const minDistC = PUCK_RADIUS + effectiveCpuMalletR;
+        if (distC < minDistC && distC > 0.001) {
+          const nx = dxC / distC;
+          const nz = dzC / distC;
+          puck.position.x = cpuMallet.position.x + nx * minDistC;
+          puck.position.z = cpuMallet.position.z + nz * minDistC;
+          const cpuVx = (cpuMallet.position.x - (prevCpuMalletX ?? cpuMallet.position.x)) / subDt;
+          const cpuVz = (cpuMallet.position.z - (prevCpuMalletZ ?? cpuMallet.position.z)) / subDt;
+          const relVn = puckVx * nx + puckVz * nz;
+          puckVx = puckVx - 2 * relVn * nx + cpuVx * 0.6;
+          puckVz = puckVz - 2 * relVn * nz + cpuVz * 0.6;
+          const spd = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
+          if (spd > MAX_PUCK_SPEED) {
+            puckVx = (puckVx / spd) * MAX_PUCK_SPEED;
+            puckVz = (puckVz / spd) * MAX_PUCK_SPEED;
+          }
+          audio.playMalletHit(spd / MAX_PUCK_SPEED);
+          effects.malletHitEffect(puck.position.x, puck.position.z, false);
         }
-        audio.playMalletHit(spd / MAX_PUCK_SPEED);
-        effects.malletHitEffect(puck.position.x, puck.position.z, false);
       }
 
       // Friction
       puckVx *= FRICTION;
       puckVz *= FRICTION;
-      // Dead zone
       const totalSpd = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
       if (totalSpd < 0.005) { puckVx = 0; puckVz = 0; }
     }
@@ -764,9 +902,11 @@ async function main() {
     puckGlow.position.x = puck.position.x;
     puckGlow.position.z = puck.position.z;
 
-    // Puck glow intensity based on speed
     const speed = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
     (puckGlowMat as any).opacity = 0.2 + Math.min(0.5, speed * 0.15);
+
+    // Puck trail
+    effects.updateTrail(dt, puck.position.x, puck.position.z, speed);
 
     // Power-up mode
     if (isPowerUpMode) {
@@ -777,12 +917,23 @@ async function main() {
         saveStats();
         audio.playPowerUp();
         ui.showMessage(`${collected.name}!`, 1500);
-        // Apply power-up
+        effects.powerUpCollectEffect(playerMallet.position.x, playerMallet.position.z, collected.color);
+
+        // Activate effect
+        powerUps.activateEffect(collected);
+
+        // Speed boost immediate effect
         if (collected.type === 'speed') {
           puckVx *= 1.5;
           puckVz *= 1.5;
         }
       }
+
+      // Update shield position
+      powerUps.updateShieldPosition(TABLE_LENGTH / 2);
+
+      // Update power-up HUD
+      ui.updatePowerUpHUD(powerUps.activeEffects);
     }
 
     // Update HUD
