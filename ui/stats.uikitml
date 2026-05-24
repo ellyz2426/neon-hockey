@@ -1,0 +1,115 @@
+<style>
+  .panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2.5;
+    background-color: rgba(0, 8, 20, 0.92);
+    border-color: #00ccff;
+    border-width: 0.12;
+    border-radius: 1.2;
+    gap: 1;
+    align-items: center;
+    width: 100%;
+  }
+  .title {
+    font-size: 3;
+    color: #00ccff;
+    font-weight: bold;
+  }
+  .section-title {
+    font-size: 1.8;
+    color: #44aacc;
+    font-weight: bold;
+    margin-top: 0.5;
+  }
+  .stat-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0.4;
+    justify-content: space-between;
+  }
+  .stat-label {
+    font-size: 1.4;
+    color: #8899aa;
+  }
+  .stat-value {
+    font-size: 1.5;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .stat-highlight {
+    font-size: 1.5;
+    color: #00ffcc;
+    font-weight: bold;
+  }
+  .divider {
+    width: 90%;
+    height: 0.04;
+    background-color: rgba(0, 204, 255, 0.2);
+  }
+  .two-col {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 2;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 0.5;
+  }
+  .btn {
+    padding: 1 2;
+    background-color: rgba(0, 204, 255, 0.15);
+    border-color: #00ccff;
+    border-width: 0.08;
+    border-radius: 0.6;
+    cursor: pointer;
+    margin-top: 0.8;
+  }
+  .btn-text {
+    font-size: 1.5;
+    color: #00ccff;
+    font-weight: bold;
+  }
+</style>
+<div class="panel">
+  <span class="title">STATISTICS</span>
+  <div class="two-col">
+    <div class="col">
+      <span class="section-title">Overall</span>
+      <div class="stat-row"><span class="stat-label">Games Played</span><span class="stat-value" id="stat-games">0</span></div>
+      <div class="stat-row"><span class="stat-label">Wins</span><span class="stat-highlight" id="stat-wins">0</span></div>
+      <div class="stat-row"><span class="stat-label">Win Rate</span><span class="stat-highlight" id="stat-winrate">0%</span></div>
+      <div class="stat-row"><span class="stat-label">Goals Scored</span><span class="stat-value" id="stat-goals">0</span></div>
+      <div class="stat-row"><span class="stat-label">Goals Conceded</span><span class="stat-value" id="stat-conceded">0</span></div>
+      <div class="stat-row"><span class="stat-label">Goal Diff</span><span class="stat-highlight" id="stat-goaldiff">0</span></div>
+    </div>
+    <div class="col">
+      <span class="section-title">Records</span>
+      <div class="stat-row"><span class="stat-label">Best Score</span><span class="stat-highlight" id="stat-best">0</span></div>
+      <div class="stat-row"><span class="stat-label">Longest Streak</span><span class="stat-highlight" id="stat-streak">0</span></div>
+      <div class="stat-row"><span class="stat-label">Best Combo</span><span class="stat-highlight" id="stat-combo">x1</span></div>
+      <div class="stat-row"><span class="stat-label">Power-ups</span><span class="stat-value" id="stat-powerups">0</span></div>
+      <div class="stat-row"><span class="stat-label">Play Time</span><span class="stat-value" id="stat-time">0m</span></div>
+      <div class="stat-row"><span class="stat-label">Achievements</span><span class="stat-highlight" id="stat-achcount">0/24</span></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <span class="section-title">Per Mode</span>
+  <div class="two-col">
+    <div class="col">
+      <div class="stat-row"><span class="stat-label">Classic</span><span class="stat-value" id="stat-mode-classic">0W / 0L</span></div>
+      <div class="stat-row"><span class="stat-label">Time Attack</span><span class="stat-value" id="stat-mode-timed">0W / 0L</span></div>
+      <div class="stat-row"><span class="stat-label">Power-Up</span><span class="stat-value" id="stat-mode-powerup">0W / 0L</span></div>
+    </div>
+    <div class="col">
+      <div class="stat-row"><span class="stat-label">Survival</span><span class="stat-value" id="stat-mode-survival">0W / 0L</span></div>
+      <div class="stat-row"><span class="stat-label">Tournament</span><span class="stat-value" id="stat-mode-tournament">0W / 0L</span></div>
+      <div class="stat-row"><span class="stat-label">Practice</span><span class="stat-value" id="stat-mode-practice">--</span></div>
+    </div>
+  </div>
+  <div class="btn" id="stats-back-btn"><span class="btn-text">BACK</span></div>
+</div>

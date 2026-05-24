@@ -1,6 +1,7 @@
 // UI Manager for Neon Hockey VR — all PanelUI, zero HTML DOM
 // Supports: title, mode select (6 modes), difficulty, HUD, message, pause,
-// game over, leaderboard, achievements, settings, help, power-up HUD, countdown
+// game over, leaderboard, achievements, settings, help, power-up HUD, countdown,
+// match history, stats
 import {
   PanelUI, PanelDocument, UIKitDocument,
   Follower, FollowBehavior, ScreenSpace, Vector3,
@@ -28,9 +29,14 @@ export class UIManager {
   onShowAchievements: (() => void) | null = null;
   onShowSettings: (() => void) | null = null;
   onShowHelp: (() => void) | null = null;
+  onShowStats: (() => void) | null = null;
+  onShowHistory: (() => void) | null = null;
   onBack: (() => void) | null = null;
   onChangeTheme: ((dir: number) => void) | null = null;
   onSetVolume: ((type: string, delta: number) => void) | null = null;
+
+  // Audio callback for button clicks
+  onButtonClick: (() => void) | null = null;
 
   constructor(world: any, initialState: GameState) {
     this.world = world;
@@ -181,6 +187,20 @@ export class UIManager {
       maxHeight: 0.9,
     });
 
+    // Match History
+    this.createPanel('matchhistory', '/ui/matchhistory.json', {
+      position: [0, 1.5, -1.5],
+      maxWidth: 1.1,
+      maxHeight: 0.9,
+    });
+
+    // Stats
+    this.createPanel('stats', '/ui/stats.json', {
+      position: [0, 1.5, -1.5],
+      maxWidth: 1.0,
+      maxHeight: 0.9,
+    });
+
     // Wire button events after a short delay to let panels load
     setTimeout(() => this.wireEvents(), 500);
     setTimeout(() => this.wireEvents(), 1500);
@@ -206,7 +226,10 @@ export class UIManager {
   private wireBtn(doc: UIKitDocument | null, id: string, handler: () => void) {
     if (!doc) return;
     const el = doc.getElementById(id);
-    if (el) el.addEventListener('click', handler);
+    if (el) el.addEventListener('click', () => {
+      this.onButtonClick?.();
+      handler();
+    });
   }
 
   wireEvents() {
@@ -217,8 +240,10 @@ export class UIManager {
     this.wireBtn(titleDoc, 'achievements-btn', () => this.onShowAchievements?.());
     this.wireBtn(titleDoc, 'settings-btn', () => this.onShowSettings?.());
     this.wireBtn(titleDoc, 'help-btn', () => this.onShowHelp?.());
+    this.wireBtn(titleDoc, 'stats-btn', () => this.onShowStats?.());
+    this.wireBtn(titleDoc, 'history-btn', () => this.onShowHistory?.());
 
-    // Mode select (now 6 modes)
+    // Mode select (6 modes)
     const modeDoc = this.getDoc('modeselect');
     this.wireBtn(modeDoc, 'classic-btn', () => this.onSetMode?.('classic'));
     this.wireBtn(modeDoc, 'timed-btn', () => this.onSetMode?.('timed'));
@@ -269,6 +294,14 @@ export class UIManager {
     const helpDoc = this.getDoc('help');
     this.wireBtn(helpDoc, 'help-back-btn', () => this.onBack?.());
 
+    // Match History
+    const mhDoc = this.getDoc('matchhistory');
+    this.wireBtn(mhDoc, 'mh-back-btn', () => this.onBack?.());
+
+    // Stats
+    const statsDoc = this.getDoc('stats');
+    this.wireBtn(statsDoc, 'stats-back-btn', () => this.onBack?.());
+
     // Set initial visibility
     this.setState(this.currentState);
   }
@@ -276,7 +309,8 @@ export class UIManager {
   setState(state: GameState) {
     this.currentState = state;
     const panels = ['title', 'modeselect', 'difficulty', 'hud', 'message', 'pause',
-      'gameover', 'leaderboard', 'achievements', 'settings', 'help', 'poweruphud', 'countdown'];
+      'gameover', 'leaderboard', 'achievements', 'settings', 'help', 'poweruphud',
+      'countdown', 'matchhistory', 'stats'];
     const visible: Record<string, string[]> = {
       'title': ['title'],
       'modeselect': ['modeselect'],
@@ -289,6 +323,8 @@ export class UIManager {
       'achievements': ['achievements'],
       'settings': ['settings'],
       'help': ['help'],
+      'matchhistory': ['matchhistory'],
+      'stats': ['stats'],
     };
 
     const show = visible[state] || [];
@@ -410,6 +446,56 @@ export class UIManager {
     const doc = this.getDoc('settings');
     this.setText(doc, 'theme-name', name);
   }
+
+  updateMatchHistory(matches: any[]) {
+    const doc = this.getDoc('matchhistory');
+    if (!doc) return;
+    this.setText(doc, 'mh-count', `${matches.length} matches played`);
+    for (let i = 0; i < 10; i++) {
+      const m = matches[i];
+      if (m) {
+        this.setText(doc, `mh-rank-${i}`, `#${i + 1}`);
+        this.setText(doc, `mh-result-${i}`, m.won ? 'WIN' : 'LOSS');
+        this.setText(doc, `mh-score-${i}`, `${m.playerScore}-${m.cpuScore}`);
+        this.setText(doc, `mh-mode-${i}`, m.mode.toUpperCase());
+        this.setText(doc, `mh-diff-${i}`, m.difficulty || '---');
+        const date = new Date(m.date);
+        this.setText(doc, `mh-date-${i}`, `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`);
+      } else {
+        this.setText(doc, `mh-rank-${i}`, `#${i + 1}`);
+        this.setText(doc, `mh-result-${i}`, '---');
+        this.setText(doc, `mh-score-${i}`, '---');
+        this.setText(doc, `mh-mode-${i}`, '---');
+        this.setText(doc, `mh-diff-${i}`, '---');
+        this.setText(doc, `mh-date-${i}`, '---');
+      }
+    }
+  }
+
+  updateStats(stats: any, achievementCount: number, bestCombo: number, modeStats: Record<string, { wins: number; losses: number }>) {
+    const doc = this.getDoc('stats');
+    if (!doc) return;
+    this.setText(doc, 'stat-games', String(stats.totalGames));
+    this.setText(doc, 'stat-wins', String(stats.totalWins));
+    const winrate = stats.totalGames > 0 ? Math.round((stats.totalWins / stats.totalGames) * 100) : 0;
+    this.setText(doc, 'stat-winrate', `${winrate}%`);
+    this.setText(doc, 'stat-goals', String(stats.totalGoals));
+    this.setText(doc, 'stat-conceded', String(stats.totalGoalsConceded));
+    const goaldiff = stats.totalGoals - stats.totalGoalsConceded;
+    this.setText(doc, 'stat-goaldiff', `${goaldiff >= 0 ? '+' : ''}${goaldiff}`);
+    this.setText(doc, 'stat-best', String(stats.bestScore));
+    this.setText(doc, 'stat-streak', String(stats.longestStreak));
+    this.setText(doc, 'stat-combo', `x${bestCombo.toFixed(1)}`);
+    this.setText(doc, 'stat-powerups', String(stats.powerUpsCollected));
+    const mins = Math.floor(stats.totalPlayTime / 60);
+    this.setText(doc, 'stat-time', mins < 60 ? `${mins}m` : `${Math.floor(mins / 60)}h ${mins % 60}m`);
+    this.setText(doc, 'stat-achcount', `${achievementCount}/${ACHIEVEMENT_LIST.length}`);
+
+    for (const mode of ['classic', 'timed', 'powerup', 'survival', 'tournament']) {
+      const ms = modeStats[mode] || { wins: 0, losses: 0 };
+      this.setText(doc, `stat-mode-${mode}`, `${ms.wins}W / ${ms.losses}L`);
+    }
+  }
 }
 
 export const ACHIEVEMENT_LIST = [
@@ -429,4 +515,13 @@ export const ACHIEVEMENT_LIST = [
   { id: 'collector', name: 'Collector', desc: 'Collect 20 power-ups' },
   { id: 'combo_master', name: 'Combo Master', desc: 'Reach x4 combo multiplier' },
   { id: 'tournament_champion', name: 'Tournament Champ', desc: 'Win a full tournament' },
+  // New achievements (Round 3)
+  { id: 'perfect_game', name: 'Perfect Game', desc: 'Win 7-0 on Hard difficulty' },
+  { id: 'speed_run', name: 'Speed Run', desc: 'Win in under 60 seconds' },
+  { id: 'power_player', name: 'Power Player', desc: 'Collect 50 total power-ups' },
+  { id: 'marathon', name: 'Marathon', desc: 'Play for 30 minutes total' },
+  { id: 'shield_master', name: 'Shield Master', desc: 'Block 5 goals with shields' },
+  { id: 'theme_explorer', name: 'Theme Explorer', desc: 'Play on all 5 table themes' },
+  { id: 'comeback_king', name: 'Comeback King', desc: 'Win after being down 0-4' },
+  { id: 'century_goals', name: 'Century Player', desc: 'Play 100 total games' },
 ];

@@ -83,6 +83,14 @@
     </div>
   </div>
   <div class="btn-row">
+    <div id="stats-btn" class="small-btn" cursor="pointer">
+      <span class="small-btn-text">STATS</span>
+    </div>
+    <div id="history-btn" class="small-btn" cursor="pointer">
+      <span class="small-btn-text">HISTORY</span>
+    </div>
+  </div>
+  <div class="btn-row">
     <div id="settings-btn" class="small-btn" cursor="pointer">
       <span class="small-btn-text">SETTINGS</span>
     </div>

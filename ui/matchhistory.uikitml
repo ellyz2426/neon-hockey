@@ -1,0 +1,121 @@
+<style>
+  .panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2.5;
+    background-color: rgba(0, 8, 20, 0.92);
+    border-color: #00ccff;
+    border-width: 0.12;
+    border-radius: 1.2;
+    gap: 1.2;
+    align-items: center;
+    width: 100%;
+  }
+  .title {
+    font-size: 3;
+    color: #00ccff;
+    font-weight: bold;
+  }
+  .subtitle {
+    font-size: 1.3;
+    color: #668899;
+  }
+  .row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0.6;
+    gap: 0.8;
+    align-items: center;
+    border-color: rgba(0, 204, 255, 0.15);
+    border-width: 0 0 0.04 0;
+  }
+  .rank {
+    font-size: 1.4;
+    color: #668899;
+    width: 8%;
+  }
+  .result {
+    font-size: 1.5;
+    font-weight: bold;
+    width: 14%;
+  }
+  .win { color: #44ff44; }
+  .loss { color: #ff4444; }
+  .score {
+    font-size: 1.5;
+    color: #ffffff;
+    width: 16%;
+  }
+  .mode {
+    font-size: 1.2;
+    color: #aabbcc;
+    width: 18%;
+  }
+  .diff {
+    font-size: 1.2;
+    color: #88aacc;
+    width: 16%;
+  }
+  .date {
+    font-size: 1.1;
+    color: #557788;
+    width: 28%;
+  }
+  .header-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0.4;
+    gap: 0.8;
+    border-color: rgba(0, 204, 255, 0.3);
+    border-width: 0 0 0.06 0;
+  }
+  .header {
+    font-size: 1.1;
+    color: #4488aa;
+    font-weight: bold;
+  }
+  .btn {
+    padding: 1 2;
+    background-color: rgba(0, 204, 255, 0.15);
+    border-color: #00ccff;
+    border-width: 0.08;
+    border-radius: 0.6;
+    cursor: pointer;
+    margin-top: 0.5;
+  }
+  .btn-text {
+    font-size: 1.5;
+    color: #00ccff;
+    font-weight: bold;
+  }
+  .empty {
+    font-size: 1.5;
+    color: #446677;
+    padding: 2;
+  }
+</style>
+<div class="panel">
+  <span class="title">MATCH HISTORY</span>
+  <span class="subtitle" id="mh-count">0 matches played</span>
+  <div class="header-row">
+    <span class="header" style="width: 8%">#</span>
+    <span class="header" style="width: 14%">Result</span>
+    <span class="header" style="width: 16%">Score</span>
+    <span class="header" style="width: 18%">Mode</span>
+    <span class="header" style="width: 16%">Diff</span>
+    <span class="header" style="width: 28%">Date</span>
+  </div>
+  <div class="row"><span class="rank" id="mh-rank-0">#1</span><span class="result win" id="mh-result-0">---</span><span class="score" id="mh-score-0">---</span><span class="mode" id="mh-mode-0">---</span><span class="diff" id="mh-diff-0">---</span><span class="date" id="mh-date-0">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-1">#2</span><span class="result win" id="mh-result-1">---</span><span class="score" id="mh-score-1">---</span><span class="mode" id="mh-mode-1">---</span><span class="diff" id="mh-diff-1">---</span><span class="date" id="mh-date-1">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-2">#3</span><span class="result win" id="mh-result-2">---</span><span class="score" id="mh-score-2">---</span><span class="mode" id="mh-mode-2">---</span><span class="diff" id="mh-diff-2">---</span><span class="date" id="mh-date-2">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-3">#4</span><span class="result win" id="mh-result-3">---</span><span class="score" id="mh-score-3">---</span><span class="mode" id="mh-mode-3">---</span><span class="diff" id="mh-diff-3">---</span><span class="date" id="mh-date-3">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-4">#5</span><span class="result win" id="mh-result-4">---</span><span class="score" id="mh-score-4">---</span><span class="mode" id="mh-mode-4">---</span><span class="diff" id="mh-diff-4">---</span><span class="date" id="mh-date-4">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-5">#6</span><span class="result win" id="mh-result-5">---</span><span class="score" id="mh-score-5">---</span><span class="mode" id="mh-mode-5">---</span><span class="diff" id="mh-diff-5">---</span><span class="date" id="mh-date-5">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-6">#7</span><span class="result win" id="mh-result-6">---</span><span class="score" id="mh-score-6">---</span><span class="mode" id="mh-mode-6">---</span><span class="diff" id="mh-diff-6">---</span><span class="date" id="mh-date-6">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-7">#8</span><span class="result win" id="mh-result-7">---</span><span class="score" id="mh-score-7">---</span><span class="mode" id="mh-mode-7">---</span><span class="diff" id="mh-diff-7">---</span><span class="date" id="mh-date-7">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-8">#9</span><span class="result win" id="mh-result-8">---</span><span class="score" id="mh-score-8">---</span><span class="mode" id="mh-mode-8">---</span><span class="diff" id="mh-diff-8">---</span><span class="date" id="mh-date-8">---</span></div>
+  <div class="row"><span class="rank" id="mh-rank-9">#10</span><span class="result win" id="mh-result-9">---</span><span class="score" id="mh-score-9">---</span><span class="mode" id="mh-mode-9">---</span><span class="diff" id="mh-diff-9">---</span><span class="date" id="mh-date-9">---</span></div>
+  <div class="btn" id="mh-back-btn"><span class="btn-text">BACK</span></div>
+</div>

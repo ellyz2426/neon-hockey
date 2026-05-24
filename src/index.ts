@@ -45,7 +45,7 @@ import { Environment } from './environment';
 import { TableThemes, TableTheme } from './themes';
 
 // ─── TYPES ───
-export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help';
+export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'matchhistory' | 'stats';
 export type GameMode = 'classic' | 'timed' | 'powerup' | 'survival' | 'tournament' | 'practice';
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -58,6 +58,22 @@ interface Stats {
   bestScore: number;
   totalPlayTime: number;
   powerUpsCollected: number;
+  bestCombo: number;
+  shieldBlocks: number;
+  themesPlayed: Set<number> | number[];
+  modeStats: Record<string, { wins: number; losses: number }>;
+  maxDeficit: number;
+}
+
+interface MatchRecord {
+  playerScore: number;
+  cpuScore: number;
+  won: boolean;
+  mode: string;
+  difficulty: string;
+  date: string;
+  combo: number;
+  duration: number;
 }
 
 // ─── CONSTANTS ───
@@ -128,15 +144,36 @@ async function main() {
   let stats: Stats = {
     totalGames: 0, totalWins: 0, totalGoals: 0, totalGoalsConceded: 0,
     longestStreak: 0, bestScore: 0, totalPlayTime: 0, powerUpsCollected: 0,
+    bestCombo: 1, shieldBlocks: 0, themesPlayed: [], modeStats: {},
+    maxDeficit: 0,
   };
   const savedStats = localStorage.getItem('neon-hockey-stats');
-  if (savedStats) { try { stats = { ...stats, ...JSON.parse(savedStats) }; } catch {} }
+  if (savedStats) {
+    try {
+      const parsed = JSON.parse(savedStats);
+      stats = { ...stats, ...parsed };
+      // Ensure themesPlayed is a proper array
+      if (!Array.isArray(stats.themesPlayed)) stats.themesPlayed = [];
+      if (!stats.modeStats) stats.modeStats = {};
+    } catch {}
+  }
+
+  // Match history
+  let matchHistory: MatchRecord[] = [];
+  const savedHistory = localStorage.getItem('neon-hockey-history');
+  if (savedHistory) { try { matchHistory = JSON.parse(savedHistory); } catch {} }
 
   function saveStats() {
-    localStorage.setItem('neon-hockey-stats', JSON.stringify(stats));
+    localStorage.setItem('neon-hockey-stats', JSON.stringify({
+      ...stats,
+      themesPlayed: Array.from(stats.themesPlayed),
+    }));
   }
   function saveAchievements() {
     localStorage.setItem('neon-hockey-achievements', JSON.stringify([...achievementsUnlocked]));
+  }
+  function saveMatchHistory() {
+    localStorage.setItem('neon-hockey-history', JSON.stringify(matchHistory.slice(0, 50)));
   }
 
   // ─── TABLE GEOMETRY ───
@@ -250,6 +287,7 @@ async function main() {
   }
 
   // Table legs
+  const boundaryGlowMeshes: Mesh[] = [];
   for (const [lx, lz] of [[-0.5, -0.85], [0.5, -0.85], [-0.5, 0.85], [0.5, 0.85]]) {
     const legGeo = new CylinderGeometry(0.025, 0.03, TABLE_HEIGHT - 0.02, 8);
     const legMat = new MeshStandardMaterial({
@@ -262,6 +300,42 @@ async function main() {
     leg.position.set(lx * (TABLE_WIDTH / 2 + 0.03), -(TABLE_HEIGHT / 2) + 0.01, lz);
     tableGroup.add(leg);
   }
+
+  // ─── BOUNDARY EDGE GLOW ───
+  // Thin glowing strips along table edges for visual flair
+  const edgeGlowGeo = new PlaneGeometry(TABLE_WIDTH + 0.06, 0.02);
+  const sideEdgeGeo = new PlaneGeometry(0.02, TABLE_LENGTH + 0.06);
+  const edgeGlowMat = new MeshBasicMaterial({
+    color: new Color(theme.accentColor),
+    transparent: true,
+    opacity: 0.4,
+    blending: AdditiveBlending,
+  });
+  // Top and bottom edges
+  const topEdgeGlow = new Mesh(edgeGlowGeo, edgeGlowMat.clone());
+  topEdgeGlow.rotation.x = -Math.PI / 2;
+  topEdgeGlow.position.set(0, 0.003, -TABLE_LENGTH / 2 - RAIL_WIDTH);
+  tableGroup.add(topEdgeGlow);
+  boundaryGlowMeshes.push(topEdgeGlow);
+
+  const bottomEdgeGlow = new Mesh(edgeGlowGeo, edgeGlowMat.clone());
+  bottomEdgeGlow.rotation.x = -Math.PI / 2;
+  bottomEdgeGlow.position.set(0, 0.003, TABLE_LENGTH / 2 + RAIL_WIDTH);
+  tableGroup.add(bottomEdgeGlow);
+  boundaryGlowMeshes.push(bottomEdgeGlow);
+
+  // Left and right edges
+  const leftEdgeGlow = new Mesh(sideEdgeGeo, edgeGlowMat.clone());
+  leftEdgeGlow.rotation.x = -Math.PI / 2;
+  leftEdgeGlow.position.set(-TABLE_WIDTH / 2 - RAIL_WIDTH, 0.003, 0);
+  tableGroup.add(leftEdgeGlow);
+  boundaryGlowMeshes.push(leftEdgeGlow);
+
+  const rightEdgeGlow = new Mesh(sideEdgeGeo, edgeGlowMat.clone());
+  rightEdgeGlow.rotation.x = -Math.PI / 2;
+  rightEdgeGlow.position.set(TABLE_WIDTH / 2 + RAIL_WIDTH, 0.003, 0);
+  tableGroup.add(rightEdgeGlow);
+  boundaryGlowMeshes.push(rightEdgeGlow);
 
   // ─── PUCK ───
   const puckGeo = new CylinderGeometry(PUCK_RADIUS, PUCK_RADIUS, PUCK_HEIGHT, 24);
@@ -385,6 +459,7 @@ async function main() {
     timedSeconds = 60;
     isPowerUpMode = gameMode === 'powerup';
     isPracticeMode = gameMode === 'practice';
+    stats.maxDeficit = 0;
     resetPuck();
     playerMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, TABLE_LENGTH * 0.35);
     cpuMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, -TABLE_LENGTH * 0.35);
@@ -416,6 +491,7 @@ async function main() {
     timedSeconds = 60;
     isPowerUpMode = gameMode === 'powerup';
     isPracticeMode = gameMode === 'practice';
+    stats.maxDeficit = 0;
     resetPuck();
     playerMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, TABLE_LENGTH * 0.35);
     cpuMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, -TABLE_LENGTH * 0.35);
@@ -439,8 +515,36 @@ async function main() {
     stats.totalGoalsConceded += cpuScore;
     if (currentStreak > stats.longestStreak) stats.longestStreak = currentStreak;
     if (playerScore > stats.bestScore) stats.bestScore = playerScore;
+    if (comboMultiplier > stats.bestCombo) stats.bestCombo = comboMultiplier;
     stats.totalPlayTime += gameTime;
+
+    // Track mode stats
+    if (!stats.modeStats[gameMode]) stats.modeStats[gameMode] = { wins: 0, losses: 0 };
+    if (won) stats.modeStats[gameMode].wins++;
+    else stats.modeStats[gameMode].losses++;
+
+    // Track theme usage
+    const themesArr = Array.isArray(stats.themesPlayed) ? stats.themesPlayed : [];
+    if (!themesArr.includes(currentThemeIndex)) {
+      themesArr.push(currentThemeIndex);
+      stats.themesPlayed = themesArr;
+    }
+
     saveStats();
+
+    // Save match record
+    matchHistory.unshift({
+      playerScore,
+      cpuScore,
+      won,
+      mode: gameMode,
+      difficulty,
+      date: new Date().toISOString(),
+      combo: comboMultiplier,
+      duration: gameTime,
+    });
+    saveMatchHistory();
+
     saveToLeaderboard();
 
     checkAchievements(won);
@@ -477,6 +581,8 @@ async function main() {
       effects.shieldBlockEffect(puck.position.x, TABLE_LENGTH / 2);
       audio.playShieldBlock();
       ui.showMessage('SHIELD BLOCK!', 1200);
+      stats.shieldBlocks++;
+      saveStats();
       return;
     }
 
@@ -494,6 +600,9 @@ async function main() {
       cpuScore++;
       currentStreak = 0;
       comboMultiplier = 1;
+      // Track max deficit for comeback achievement
+      const deficit = cpuScore - playerScore;
+      if (deficit > stats.maxDeficit) stats.maxDeficit = deficit;
       effects.goalEffect(puck.position.x, puck.position.z, false);
       audio.playGoalConceded();
     }
@@ -540,13 +649,22 @@ async function main() {
     if (currentStreak >= 7) unlockAchievement('unstoppable');
     if (stats.totalGames >= 10) unlockAchievement('veteran');
     if (stats.totalGames >= 50) unlockAchievement('dedicated');
+    if (stats.totalGames >= 100) unlockAchievement('century_goals');
     if (stats.totalGoals >= 100) unlockAchievement('century');
     if (stats.totalWins >= 25) unlockAchievement('quarter_century');
     if (difficulty === 'hard' && won) unlockAchievement('hard_winner');
+    if (difficulty === 'hard' && won && cpuScore === 0) unlockAchievement('perfect_game');
     if (gameMode === 'survival' && playerScore >= 10) unlockAchievement('survivor');
     if (gameMode === 'timed' && playerScore >= 10) unlockAchievement('speed_demon');
     if (stats.powerUpsCollected >= 20) unlockAchievement('collector');
+    if (stats.powerUpsCollected >= 50) unlockAchievement('power_player');
     if (comboMultiplier >= 4) unlockAchievement('combo_master');
+    if (won && gameTime < 60) unlockAchievement('speed_run');
+    if (stats.totalPlayTime >= 1800) unlockAchievement('marathon');
+    if (stats.shieldBlocks >= 5) unlockAchievement('shield_master');
+    const themesArr = Array.isArray(stats.themesPlayed) ? stats.themesPlayed : [];
+    if (themesArr.length >= 5) unlockAchievement('theme_explorer');
+    if (won && stats.maxDeficit >= 4) unlockAchievement('comeback_king');
   }
 
   // ─── LEADERBOARD ───
@@ -585,6 +703,7 @@ async function main() {
   }
 
   // ─── UI CALLBACKS ───
+  ui.onButtonClick = () => audio.playButtonClick();
   ui.onStartGame = () => startGameWithCountdown();
   ui.onModeSelect = () => changeState('modeselect');
   ui.onSetMode = (mode: GameMode) => {
@@ -623,6 +742,14 @@ async function main() {
   };
   ui.onShowSettings = () => changeState('settings');
   ui.onShowHelp = () => changeState('help');
+  ui.onShowStats = () => {
+    ui.updateStats(stats, achievementsUnlocked.size, stats.bestCombo, stats.modeStats);
+    changeState('stats');
+  };
+  ui.onShowHistory = () => {
+    ui.updateMatchHistory(matchHistory);
+    changeState('matchhistory');
+  };
   ui.onBack = () => changeState('title');
   ui.onChangeTheme = (dir: number) => {
     let idx = currentThemeIndex + dir;
@@ -653,6 +780,12 @@ async function main() {
     // Update effects & environment always
     effects.update(dt);
     env.update(dt);
+
+    // Boundary glow pulse
+    const glowPulse = 0.3 + Math.sin(performance.now() / 1000 * 1.5) * 0.15;
+    for (const glow of boundaryGlowMeshes) {
+      (glow.material as any).opacity = glowPulse;
+    }
 
     if (goalCooldown > 0) goalCooldown -= dt;
 

@@ -146,11 +146,15 @@ export class AudioManager {
   playGoalScored() {
     this.ensure();
     if (!this.ctx || !this.sfxGain) return;
+    // Goal horn — two-note blast
+    this.playSFX(220, 'sawtooth', 0.5, 0.35);
+    this.playSFX(330, 'sawtooth', 0.5, 0.3, 5);
+    // Then celebratory arpeggio
     const notes = [523, 659, 784, 1047];
     notes.forEach((freq, i) => {
-      setTimeout(() => this.playSFX(freq, 'sawtooth', 0.3, 0.25), i * 80);
+      setTimeout(() => this.playSFX(freq, 'sawtooth', 0.3, 0.2), 200 + i * 80);
     });
-    this.playNoise(0.3, 0.15, 2000);
+    this.playNoise(0.3, 0.12, 2000);
   }
 
   playGoalConceded() {
