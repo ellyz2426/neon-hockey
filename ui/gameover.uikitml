@@ -1,0 +1,71 @@
+<style>
+  .go-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 8, 20, 0.95);
+    border-color: #00ccff;
+    border-width: 0.12;
+    border-radius: 1.5;
+    gap: 1;
+  }
+  .result-text {
+    font-size: 3.5;
+    font-weight: bold;
+  }
+  .final-score {
+    font-size: 2.5;
+    color: #aaccdd;
+    font-weight: bold;
+  }
+  .go-mode {
+    font-size: 1.3;
+    color: #668899;
+  }
+  .go-combo {
+    font-size: 1.2;
+    color: #ffaa00;
+  }
+  .go-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.8;
+    padding-bottom: 0.8;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 80, 150, 0.3);
+    border-color: #00ccff;
+    border-width: 0.08;
+    border-radius: 0.6;
+    cursor: pointer;
+    width: 70%;
+  }
+  .go-btn-text {
+    font-size: 1.8;
+    color: #00ddff;
+    font-weight: bold;
+  }
+  .menu-btn {
+    border-color: #884444;
+  }
+  .menu-text {
+    color: #cc8888;
+  }
+</style>
+<div class="go-panel">
+  <span id="result-text" class="result-text">VICTORY!</span>
+  <span id="final-score" class="final-score">7 - 3</span>
+  <span id="go-mode" class="go-mode">CLASSIC</span>
+  <span id="go-combo" class="go-combo"></span>
+  <div id="rematch-btn" class="go-btn" cursor="pointer">
+    <span class="go-btn-text">REMATCH</span>
+  </div>
+  <div id="go-menu-btn" class="go-btn menu-btn" cursor="pointer">
+    <span class="go-btn-text menu-text">MENU</span>
+  </div>
+</div>

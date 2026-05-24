@@ -1,0 +1,1044 @@
+{
+  "element": {
+    "type": "container",
+    "sourceTag": "div",
+    "children": [
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "P1"
+            ],
+            "properties": {
+              "id": "cric-p1-name",
+              "class": "player-label"
+            },
+            "dataUid": "uid-3"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "CRICKET"
+            ],
+            "properties": {
+              "class": "cricket-title"
+            },
+            "dataUid": "uid-4"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "P2"
+            ],
+            "properties": {
+              "id": "cric-p2-name",
+              "class": "player-label-2"
+            },
+            "dataUid": "uid-5"
+          }
+        ],
+        "properties": {
+          "class": "cricket-header"
+        },
+        "dataUid": "uid-2"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p1-20",
+              "class": "marks-cell"
+            },
+            "dataUid": "uid-7"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "20"
+            ],
+            "properties": {
+              "class": "segment-label"
+            },
+            "dataUid": "uid-8"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p2-20",
+              "class": "marks-cell-2"
+            },
+            "dataUid": "uid-9"
+          }
+        ],
+        "properties": {
+          "class": "cricket-row"
+        },
+        "dataUid": "uid-6"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p1-19",
+              "class": "marks-cell"
+            },
+            "dataUid": "uid-11"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "19"
+            ],
+            "properties": {
+              "class": "segment-label"
+            },
+            "dataUid": "uid-12"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p2-19",
+              "class": "marks-cell-2"
+            },
+            "dataUid": "uid-13"
+          }
+        ],
+        "properties": {
+          "class": "cricket-row"
+        },
+        "dataUid": "uid-10"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p1-18",
+              "class": "marks-cell"
+            },
+            "dataUid": "uid-15"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "18"
+            ],
+            "properties": {
+              "class": "segment-label"
+            },
+            "dataUid": "uid-16"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p2-18",
+              "class": "marks-cell-2"
+            },
+            "dataUid": "uid-17"
+          }
+        ],
+        "properties": {
+          "class": "cricket-row"
+        },
+        "dataUid": "uid-14"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p1-17",
+              "class": "marks-cell"
+            },
+            "dataUid": "uid-19"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "17"
+            ],
+            "properties": {
+              "class": "segment-label"
+            },
+            "dataUid": "uid-20"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p2-17",
+              "class": "marks-cell-2"
+            },
+            "dataUid": "uid-21"
+          }
+        ],
+        "properties": {
+          "class": "cricket-row"
+        },
+        "dataUid": "uid-18"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p1-16",
+              "class": "marks-cell"
+            },
+            "dataUid": "uid-23"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "16"
+            ],
+            "properties": {
+              "class": "segment-label"
+            },
+            "dataUid": "uid-24"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p2-16",
+              "class": "marks-cell-2"
+            },
+            "dataUid": "uid-25"
+          }
+        ],
+        "properties": {
+          "class": "cricket-row"
+        },
+        "dataUid": "uid-22"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p1-15",
+              "class": "marks-cell"
+            },
+            "dataUid": "uid-27"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "15"
+            ],
+            "properties": {
+              "class": "segment-label"
+            },
+            "dataUid": "uid-28"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p2-15",
+              "class": "marks-cell-2"
+            },
+            "dataUid": "uid-29"
+          }
+        ],
+        "properties": {
+          "class": "cricket-row"
+        },
+        "dataUid": "uid-26"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p1-25",
+              "class": "marks-cell"
+            },
+            "dataUid": "uid-31"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "BULL"
+            ],
+            "properties": {
+              "class": "segment-label"
+            },
+            "dataUid": "uid-32"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "---"
+            ],
+            "properties": {
+              "id": "cric-p2-25",
+              "class": "marks-cell-2"
+            },
+            "dataUid": "uid-33"
+          }
+        ],
+        "properties": {
+          "class": "cricket-row"
+        },
+        "dataUid": "uid-30"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "0"
+            ],
+            "properties": {
+              "id": "cric-p1-pts",
+              "class": "points-value"
+            },
+            "dataUid": "uid-35"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "PTS"
+            ],
+            "properties": {
+              "class": "points-label"
+            },
+            "dataUid": "uid-36"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "0"
+            ],
+            "properties": {
+              "id": "cric-p2-pts",
+              "class": "points-value-2"
+            },
+            "dataUid": "uid-37"
+          }
+        ],
+        "properties": {
+          "class": "points-row"
+        },
+        "dataUid": "uid-34"
+      }
+    ],
+    "properties": {
+      "class": "cricket-panel"
+    },
+    "dataUid": "uid-1"
+  },
+  "classes": {
+    "cricket-panel": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "column",
+        "padding": "2",
+        "backgroundColor": "rgba(0, 0, 0, 0.8)",
+        "borderColor": "#00ff88",
+        "borderWidth": "0.08",
+        "borderRadius": 0.8,
+        "gap": "0.5"
+      }
+    },
+    "cricket-header": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "paddingBottom": "1",
+        "borderBottomWidth": "0.05",
+        "borderColor": "#333333"
+      }
+    },
+    "cricket-title": {
+      "content": {
+        "fontSize": "2",
+        "color": "#00ff88",
+        "fontWeight": "bold"
+      }
+    },
+    "player-label": {
+      "content": {
+        "fontSize": "1.5",
+        "color": "#00ffff",
+        "fontWeight": "bold",
+        "minWidth": "8",
+        "textAlign": "center"
+      }
+    },
+    "player-label-2": {
+      "content": {
+        "fontSize": "1.5",
+        "color": "#ff00ff",
+        "fontWeight": "bold",
+        "minWidth": "8",
+        "textAlign": "center"
+      }
+    },
+    "cricket-row": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "alignItems": "center",
+        "paddingTop": "0.3",
+        "paddingBottom": "0.3",
+        "paddingLeft": "0",
+        "paddingRight": "0"
+      }
+    },
+    "segment-label": {
+      "content": {
+        "fontSize": "1.8",
+        "color": "#ffffff",
+        "fontWeight": "bold",
+        "minWidth": "4",
+        "textAlign": "center"
+      }
+    },
+    "marks-cell": {
+      "content": {
+        "fontSize": "1.6",
+        "color": "#00ffff",
+        "fontWeight": "bold",
+        "minWidth": "8",
+        "textAlign": "center"
+      }
+    },
+    "marks-cell-2": {
+      "content": {
+        "fontSize": "1.6",
+        "color": "#ff00ff",
+        "fontWeight": "bold",
+        "minWidth": "8",
+        "textAlign": "center"
+      }
+    },
+    "points-row": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "paddingTop": "1",
+        "borderTopWidth": "0.05",
+        "borderColor": "#333333"
+      }
+    },
+    "points-label": {
+      "content": {
+        "fontSize": "1.8",
+        "color": "#ffcc00",
+        "fontWeight": "bold",
+        "minWidth": "4",
+        "textAlign": "center"
+      }
+    },
+    "points-value": {
+      "content": {
+        "fontSize": "1.8",
+        "color": "#00ffff",
+        "fontWeight": "bold",
+        "minWidth": "8",
+        "textAlign": "center"
+      }
+    },
+    "points-value-2": {
+      "content": {
+        "fontSize": "1.8",
+        "color": "#ff00ff",
+        "fontWeight": "bold",
+        "minWidth": "8",
+        "textAlign": "center"
+      }
+    }
+  },
+  "ranges": {
+    "cricket-panel": {
+      "start": {
+        "line": 1,
+        "column": 2
+      },
+      "end": {
+        "line": 1,
+        "column": 16
+      }
+    },
+    "cricket-header": {
+      "start": {
+        "line": 11,
+        "column": 2
+      },
+      "end": {
+        "line": 11,
+        "column": 17
+      }
+    },
+    "cricket-title": {
+      "start": {
+        "line": 19,
+        "column": 2
+      },
+      "end": {
+        "line": 19,
+        "column": 16
+      }
+    },
+    "player-label": {
+      "start": {
+        "line": 24,
+        "column": 2
+      },
+      "end": {
+        "line": 24,
+        "column": 15
+      }
+    },
+    "player-label-2": {
+      "start": {
+        "line": 31,
+        "column": 2
+      },
+      "end": {
+        "line": 31,
+        "column": 17
+      }
+    },
+    "cricket-row": {
+      "start": {
+        "line": 38,
+        "column": 2
+      },
+      "end": {
+        "line": 38,
+        "column": 14
+      }
+    },
+    "segment-label": {
+      "start": {
+        "line": 48,
+        "column": 2
+      },
+      "end": {
+        "line": 48,
+        "column": 16
+      }
+    },
+    "marks-cell": {
+      "start": {
+        "line": 55,
+        "column": 2
+      },
+      "end": {
+        "line": 55,
+        "column": 13
+      }
+    },
+    "marks-cell-2": {
+      "start": {
+        "line": 62,
+        "column": 2
+      },
+      "end": {
+        "line": 62,
+        "column": 15
+      }
+    },
+    "points-row": {
+      "start": {
+        "line": 69,
+        "column": 2
+      },
+      "end": {
+        "line": 69,
+        "column": 13
+      }
+    },
+    "points-label": {
+      "start": {
+        "line": 77,
+        "column": 2
+      },
+      "end": {
+        "line": 77,
+        "column": 15
+      }
+    },
+    "points-value": {
+      "start": {
+        "line": 84,
+        "column": 2
+      },
+      "end": {
+        "line": 84,
+        "column": 15
+      }
+    },
+    "points-value-2": {
+      "start": {
+        "line": 91,
+        "column": 2
+      },
+      "end": {
+        "line": 91,
+        "column": 17
+      }
+    },
+    "uid-1": {
+      "start": {
+        "line": 99,
+        "column": 0
+      },
+      "end": {
+        "line": 145,
+        "column": 6
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 100,
+        "column": 2
+      },
+      "end": {
+        "line": 104,
+        "column": 8
+      }
+    },
+    "uid-3": {
+      "start": {
+        "line": 101,
+        "column": 4
+      },
+      "end": {
+        "line": 101,
+        "column": 58
+      }
+    },
+    "uid-4": {
+      "start": {
+        "line": 102,
+        "column": 4
+      },
+      "end": {
+        "line": 102,
+        "column": 46
+      }
+    },
+    "uid-5": {
+      "start": {
+        "line": 103,
+        "column": 4
+      },
+      "end": {
+        "line": 103,
+        "column": 60
+      }
+    },
+    "uid-6": {
+      "start": {
+        "line": 105,
+        "column": 2
+      },
+      "end": {
+        "line": 109,
+        "column": 8
+      }
+    },
+    "uid-7": {
+      "start": {
+        "line": 106,
+        "column": 4
+      },
+      "end": {
+        "line": 106,
+        "column": 55
+      }
+    },
+    "uid-8": {
+      "start": {
+        "line": 107,
+        "column": 4
+      },
+      "end": {
+        "line": 107,
+        "column": 41
+      }
+    },
+    "uid-9": {
+      "start": {
+        "line": 108,
+        "column": 4
+      },
+      "end": {
+        "line": 108,
+        "column": 57
+      }
+    },
+    "uid-10": {
+      "start": {
+        "line": 110,
+        "column": 2
+      },
+      "end": {
+        "line": 114,
+        "column": 8
+      }
+    },
+    "uid-11": {
+      "start": {
+        "line": 111,
+        "column": 4
+      },
+      "end": {
+        "line": 111,
+        "column": 55
+      }
+    },
+    "uid-12": {
+      "start": {
+        "line": 112,
+        "column": 4
+      },
+      "end": {
+        "line": 112,
+        "column": 41
+      }
+    },
+    "uid-13": {
+      "start": {
+        "line": 113,
+        "column": 4
+      },
+      "end": {
+        "line": 113,
+        "column": 57
+      }
+    },
+    "uid-14": {
+      "start": {
+        "line": 115,
+        "column": 2
+      },
+      "end": {
+        "line": 119,
+        "column": 8
+      }
+    },
+    "uid-15": {
+      "start": {
+        "line": 116,
+        "column": 4
+      },
+      "end": {
+        "line": 116,
+        "column": 55
+      }
+    },
+    "uid-16": {
+      "start": {
+        "line": 117,
+        "column": 4
+      },
+      "end": {
+        "line": 117,
+        "column": 41
+      }
+    },
+    "uid-17": {
+      "start": {
+        "line": 118,
+        "column": 4
+      },
+      "end": {
+        "line": 118,
+        "column": 57
+      }
+    },
+    "uid-18": {
+      "start": {
+        "line": 120,
+        "column": 2
+      },
+      "end": {
+        "line": 124,
+        "column": 8
+      }
+    },
+    "uid-19": {
+      "start": {
+        "line": 121,
+        "column": 4
+      },
+      "end": {
+        "line": 121,
+        "column": 55
+      }
+    },
+    "uid-20": {
+      "start": {
+        "line": 122,
+        "column": 4
+      },
+      "end": {
+        "line": 122,
+        "column": 41
+      }
+    },
+    "uid-21": {
+      "start": {
+        "line": 123,
+        "column": 4
+      },
+      "end": {
+        "line": 123,
+        "column": 57
+      }
+    },
+    "uid-22": {
+      "start": {
+        "line": 125,
+        "column": 2
+      },
+      "end": {
+        "line": 129,
+        "column": 8
+      }
+    },
+    "uid-23": {
+      "start": {
+        "line": 126,
+        "column": 4
+      },
+      "end": {
+        "line": 126,
+        "column": 55
+      }
+    },
+    "uid-24": {
+      "start": {
+        "line": 127,
+        "column": 4
+      },
+      "end": {
+        "line": 127,
+        "column": 41
+      }
+    },
+    "uid-25": {
+      "start": {
+        "line": 128,
+        "column": 4
+      },
+      "end": {
+        "line": 128,
+        "column": 57
+      }
+    },
+    "uid-26": {
+      "start": {
+        "line": 130,
+        "column": 2
+      },
+      "end": {
+        "line": 134,
+        "column": 8
+      }
+    },
+    "uid-27": {
+      "start": {
+        "line": 131,
+        "column": 4
+      },
+      "end": {
+        "line": 131,
+        "column": 55
+      }
+    },
+    "uid-28": {
+      "start": {
+        "line": 132,
+        "column": 4
+      },
+      "end": {
+        "line": 132,
+        "column": 41
+      }
+    },
+    "uid-29": {
+      "start": {
+        "line": 133,
+        "column": 4
+      },
+      "end": {
+        "line": 133,
+        "column": 57
+      }
+    },
+    "uid-30": {
+      "start": {
+        "line": 135,
+        "column": 2
+      },
+      "end": {
+        "line": 139,
+        "column": 8
+      }
+    },
+    "uid-31": {
+      "start": {
+        "line": 136,
+        "column": 4
+      },
+      "end": {
+        "line": 136,
+        "column": 55
+      }
+    },
+    "uid-32": {
+      "start": {
+        "line": 137,
+        "column": 4
+      },
+      "end": {
+        "line": 137,
+        "column": 43
+      }
+    },
+    "uid-33": {
+      "start": {
+        "line": 138,
+        "column": 4
+      },
+      "end": {
+        "line": 138,
+        "column": 57
+      }
+    },
+    "uid-34": {
+      "start": {
+        "line": 140,
+        "column": 2
+      },
+      "end": {
+        "line": 144,
+        "column": 8
+      }
+    },
+    "uid-35": {
+      "start": {
+        "line": 141,
+        "column": 4
+      },
+      "end": {
+        "line": 141,
+        "column": 56
+      }
+    },
+    "uid-36": {
+      "start": {
+        "line": 142,
+        "column": 4
+      },
+      "end": {
+        "line": 142,
+        "column": 41
+      }
+    },
+    "uid-37": {
+      "start": {
+        "line": 143,
+        "column": 4
+      },
+      "end": {
+        "line": 143,
+        "column": 58
+      }
+    }
+  }
+}

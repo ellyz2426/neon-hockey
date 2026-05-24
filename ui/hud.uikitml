@@ -1,0 +1,57 @@
+<style>
+  .hud-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 0.8;
+    padding-bottom: 0.8;
+    padding-left: 1.5;
+    padding-right: 1.5;
+    background-color: rgba(0, 8, 20, 0.85);
+    border-color: #00ccff;
+    border-width: 0.08;
+    border-radius: 0.8;
+    gap: 1.5;
+    justify-content: center;
+  }
+  .score-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .score-label {
+    font-size: 1;
+    color: #6699aa;
+  }
+  .player-score {
+    font-size: 3;
+    color: #00ff88;
+    font-weight: bold;
+  }
+  .cpu-score {
+    font-size: 3;
+    color: #ff4466;
+    font-weight: bold;
+  }
+  .dash {
+    font-size: 2.5;
+    color: #445566;
+    font-weight: bold;
+  }
+  .info-text {
+    font-size: 1.1;
+    color: #88aacc;
+  }
+</style>
+<div class="hud-panel">
+  <div class="score-section">
+    <span class="score-label">YOU</span>
+    <span id="player-score" class="player-score">0</span>
+  </div>
+  <span class="dash">-</span>
+  <div class="score-section">
+    <span class="score-label">CPU</span>
+    <span id="cpu-score" class="cpu-score">0</span>
+  </div>
+  <span id="info-text" class="info-text">First to 7</span>
+</div>

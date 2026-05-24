@@ -1,0 +1,81 @@
+<style>
+  .lb-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 8, 20, 0.92);
+    border-color: #ffaa00;
+    border-width: 0.12;
+    border-radius: 1.5;
+    gap: 0.6;
+  }
+  .lb-title {
+    font-size: 2.5;
+    color: #ffaa00;
+    font-weight: bold;
+  }
+  .lb-row {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    padding-top: 0.3;
+    padding-bottom: 0.3;
+    padding-left: 1;
+    padding-right: 1;
+    gap: 1;
+  }
+  .lb-rank {
+    font-size: 1.3;
+    color: #ffcc44;
+    font-weight: bold;
+    width: 15%;
+  }
+  .lb-score {
+    font-size: 1.3;
+    color: #aaccdd;
+    width: 40%;
+  }
+  .lb-mode {
+    font-size: 1.2;
+    color: #668899;
+    width: 35%;
+  }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(80, 40, 40, 0.3);
+    border-color: #884444;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .back-text {
+    font-size: 1.3;
+    color: #cc8888;
+  }
+</style>
+<div class="lb-panel">
+  <span class="lb-title">LEADERBOARD</span>
+  <div class="lb-row"><span id="lb-rank-0" class="lb-rank">#1</span><span id="lb-score-0" class="lb-score">---</span><span id="lb-mode-0" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-1" class="lb-rank">#2</span><span id="lb-score-1" class="lb-score">---</span><span id="lb-mode-1" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-2" class="lb-rank">#3</span><span id="lb-score-2" class="lb-score">---</span><span id="lb-mode-2" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-3" class="lb-rank">#4</span><span id="lb-score-3" class="lb-score">---</span><span id="lb-mode-3" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-4" class="lb-rank">#5</span><span id="lb-score-4" class="lb-score">---</span><span id="lb-mode-4" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-5" class="lb-rank">#6</span><span id="lb-score-5" class="lb-score">---</span><span id="lb-mode-5" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-6" class="lb-rank">#7</span><span id="lb-score-6" class="lb-score">---</span><span id="lb-mode-6" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-7" class="lb-rank">#8</span><span id="lb-score-7" class="lb-score">---</span><span id="lb-mode-7" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-8" class="lb-rank">#9</span><span id="lb-score-8" class="lb-score">---</span><span id="lb-mode-8" class="lb-mode"></span></div>
+  <div class="lb-row"><span id="lb-rank-9" class="lb-rank">#10</span><span id="lb-score-9" class="lb-score">---</span><span id="lb-mode-9" class="lb-mode"></span></div>
+  <div id="lb-back-btn" class="back-btn" cursor="pointer">
+    <span class="back-text">BACK</span>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<style>
+  .help-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 8, 20, 0.92);
+    border-color: #00ccff;
+    border-width: 0.12;
+    border-radius: 1.5;
+    gap: 0.8;
+  }
+  .help-title {
+    font-size: 2.5;
+    color: #00ccff;
+    font-weight: bold;
+  }
+  .section-title {
+    font-size: 1.6;
+    color: #ffaa00;
+    font-weight: bold;
+  }
+  .help-text {
+    font-size: 1.1;
+    color: #88aacc;
+  }
+  .controls-section {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    gap: 0.3;
+  }
+  .control-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1;
+  }
+  .key-text {
+    font-size: 1.1;
+    color: #00ddff;
+    font-weight: bold;
+    width: 40%;
+  }
+  .action-text {
+    font-size: 1.1;
+    color: #6699aa;
+    width: 55%;
+  }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(80, 40, 40, 0.3);
+    border-color: #884444;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .back-text {
+    font-size: 1.3;
+    color: #cc8888;
+  }
+</style>
+<div class="help-panel">
+  <span class="help-title">HOW TO PLAY</span>
+  <span class="help-text">Hit the puck into the opponent goal!</span>
+  <div class="controls-section">
+    <span class="section-title">BROWSER CONTROLS</span>
+    <div class="control-row"><span class="key-text">Mouse</span><span class="action-text">Move mallet</span></div>
+    <div class="control-row"><span class="key-text">ESC</span><span class="action-text">Pause game</span></div>
+  </div>
+  <div class="controls-section">
+    <span class="section-title">VR CONTROLS</span>
+    <div class="control-row"><span class="key-text">Right Hand</span><span class="action-text">Move mallet</span></div>
+    <div class="control-row"><span class="key-text">Trigger</span><span class="action-text">Select menu item</span></div>
+    <div class="control-row"><span class="key-text">B Button</span><span class="action-text">Pause</span></div>
+    <div class="control-row"><span class="key-text">Thumbstick</span><span class="action-text">Navigate menus</span></div>
+  </div>
+  <div class="controls-section">
+    <span class="section-title">GAME MODES</span>
+    <div class="control-row"><span class="key-text">Classic</span><span class="action-text">First to 7 goals</span></div>
+    <div class="control-row"><span class="key-text">Time Attack</span><span class="action-text">60s, most goals wins</span></div>
+    <div class="control-row"><span class="key-text">Power-Up</span><span class="action-text">Collect table power-ups</span></div>
+    <div class="control-row"><span class="key-text">Survival</span><span class="action-text">3 lives, max score</span></div>
+    <div class="control-row"><span class="key-text">Tournament</span><span class="action-text">4 rounds, harder each</span></div>
+  </div>
+  <div id="help-back-btn" class="back-btn" cursor="pointer">
+    <span class="back-text">BACK</span>
+  </div>
+</div>

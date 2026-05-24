@@ -1,0 +1,86 @@
+<style>
+  .diff-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 8, 20, 0.92);
+    border-color: #00ccff;
+    border-width: 0.12;
+    border-radius: 1.5;
+    gap: 1.2;
+  }
+  .diff-title {
+    font-size: 2.5;
+    color: #00ccff;
+    font-weight: bold;
+  }
+  .diff-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.8;
+    padding-bottom: 0.8;
+    padding-left: 3;
+    padding-right: 3;
+    background-color: rgba(0, 80, 150, 0.25);
+    border-color: #0088cc;
+    border-width: 0.08;
+    border-radius: 0.6;
+    cursor: pointer;
+    width: 80%;
+  }
+  .easy-btn { border-color: #44ff44; }
+  .medium-btn { border-color: #ffaa00; }
+  .hard-btn { border-color: #ff4444; }
+  .diff-name {
+    font-size: 2;
+    font-weight: bold;
+  }
+  .easy-name { color: #44ff44; }
+  .medium-name { color: #ffaa00; }
+  .hard-name { color: #ff4444; }
+  .diff-desc {
+    font-size: 1.1;
+    color: #6699aa;
+  }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.6;
+    padding-bottom: 0.6;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(80, 40, 40, 0.3);
+    border-color: #884444;
+    border-width: 0.06;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .back-text {
+    font-size: 1.3;
+    color: #cc8888;
+  }
+</style>
+<div class="diff-panel">
+  <span class="diff-title">DIFFICULTY</span>
+  <div id="easy-btn" class="diff-btn easy-btn" cursor="pointer">
+    <span class="diff-name easy-name">EASY</span>
+    <span class="diff-desc">Relaxed AI, slower reactions</span>
+  </div>
+  <div id="medium-btn" class="diff-btn medium-btn" cursor="pointer">
+    <span class="diff-name medium-name">MEDIUM</span>
+    <span class="diff-desc">Balanced challenge</span>
+  </div>
+  <div id="hard-btn" class="diff-btn hard-btn" cursor="pointer">
+    <span class="diff-name hard-name">HARD</span>
+    <span class="diff-desc">Fast and aggressive AI</span>
+  </div>
+  <div id="diff-back-btn" class="back-btn" cursor="pointer">
+    <span class="back-text">BACK</span>
+  </div>
+</div>
