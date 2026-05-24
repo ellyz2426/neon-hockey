@@ -8,6 +8,8 @@ import {
 } from '@iwsdk/core';
 import type { GameState, GameMode, Difficulty } from './index';
 import type { ActiveEffect } from './powerups';
+import type { DailyChallenge } from './daily-challenge';
+import type { PuckSkin } from './puck-skins';
 
 type ClickHandler = (() => void) | null;
 
@@ -34,6 +36,10 @@ export class UIManager {
   onBack: (() => void) | null = null;
   onChangeTheme: ((dir: number) => void) | null = null;
   onSetVolume: ((type: string, delta: number) => void) | null = null;
+  onShowDailyChallenge: (() => void) | null = null;
+  onPlayDailyChallenge: (() => void) | null = null;
+  onShowPuckSkins: (() => void) | null = null;
+  onSelectPuckSkin: ((skinId: string) => void) | null = null;
 
   // Audio callback for button clicks
   onButtonClick: (() => void) | null = null;
@@ -201,6 +207,28 @@ export class UIManager {
       maxHeight: 0.9,
     });
 
+    // Daily Challenge
+    this.createPanel('dailychallenge', '/ui/dailychallenge.json', {
+      position: [0, 1.5, -1.5],
+      maxWidth: 0.9,
+      maxHeight: 0.9,
+    });
+
+    // Puck Skins
+    this.createPanel('puckskins', '/ui/puckskins.json', {
+      position: [0, 1.5, -1.5],
+      maxWidth: 0.9,
+      maxHeight: 1.0,
+    });
+
+    // Combo display — world space, near table
+    this.createPanel('combo', '/ui/combo.json', {
+      maxWidth: 0.15,
+      maxHeight: 0.1,
+      follower: true,
+      offsetPosition: [-0.22, 0.12, -0.5],
+    });
+
     // Wire button events after a short delay to let panels load
     setTimeout(() => this.wireEvents(), 500);
     setTimeout(() => this.wireEvents(), 1500);
@@ -242,8 +270,9 @@ export class UIManager {
     this.wireBtn(titleDoc, 'help-btn', () => this.onShowHelp?.());
     this.wireBtn(titleDoc, 'stats-btn', () => this.onShowStats?.());
     this.wireBtn(titleDoc, 'history-btn', () => this.onShowHistory?.());
+    this.wireBtn(titleDoc, 'skins-btn', () => this.onShowPuckSkins?.());
 
-    // Mode select (6 modes)
+    // Mode select (7 modes including daily)
     const modeDoc = this.getDoc('modeselect');
     this.wireBtn(modeDoc, 'classic-btn', () => this.onSetMode?.('classic'));
     this.wireBtn(modeDoc, 'timed-btn', () => this.onSetMode?.('timed'));
@@ -251,6 +280,7 @@ export class UIManager {
     this.wireBtn(modeDoc, 'survival-btn', () => this.onSetMode?.('survival'));
     this.wireBtn(modeDoc, 'tournament-btn', () => this.onSetMode?.('tournament'));
     this.wireBtn(modeDoc, 'practice-btn', () => this.onSetMode?.('practice'));
+    this.wireBtn(modeDoc, 'daily-btn', () => this.onShowDailyChallenge?.());
     this.wireBtn(modeDoc, 'mode-back-btn', () => this.onBack?.());
 
     // Difficulty
@@ -302,6 +332,23 @@ export class UIManager {
     const statsDoc = this.getDoc('stats');
     this.wireBtn(statsDoc, 'stats-back-btn', () => this.onBack?.());
 
+    // Daily Challenge
+    const dcDoc = this.getDoc('dailychallenge');
+    this.wireBtn(dcDoc, 'dc-play-btn', () => this.onPlayDailyChallenge?.());
+    this.wireBtn(dcDoc, 'dc-back-btn', () => this.onModeSelect?.());
+
+    // Puck Skins
+    const psDoc = this.getDoc('puckskins');
+    for (let i = 0; i < 6; i++) {
+      const idx = i;
+      this.wireBtn(psDoc, `skin-${idx}`, () => {
+        // The skin ID needs to be looked up — use the order
+        const skinIds = ['default', 'plasma', 'ice', 'solar', 'toxic', 'crimson'];
+        this.onSelectPuckSkin?.(skinIds[idx]);
+      });
+    }
+    this.wireBtn(psDoc, 'ps-back-btn', () => this.onShowSettings?.());
+
     // Set initial visibility
     this.setState(this.currentState);
   }
@@ -310,12 +357,12 @@ export class UIManager {
     this.currentState = state;
     const panels = ['title', 'modeselect', 'difficulty', 'hud', 'message', 'pause',
       'gameover', 'leaderboard', 'achievements', 'settings', 'help', 'poweruphud',
-      'countdown', 'matchhistory', 'stats'];
+      'countdown', 'matchhistory', 'stats', 'dailychallenge', 'puckskins', 'combo'];
     const visible: Record<string, string[]> = {
       'title': ['title'],
       'modeselect': ['modeselect'],
       'difficulty': ['difficulty'],
-      'playing': ['hud'],
+      'playing': ['hud', 'combo'],
       'countdown': ['hud', 'countdown'],
       'paused': ['hud', 'pause'],
       'gameover': ['gameover'],
@@ -325,6 +372,8 @@ export class UIManager {
       'help': ['help'],
       'matchhistory': ['matchhistory'],
       'stats': ['stats'],
+      'dailychallenge': ['dailychallenge'],
+      'puckskins': ['puckskins'],
     };
 
     const show = visible[state] || [];
@@ -491,9 +540,54 @@ export class UIManager {
     this.setText(doc, 'stat-time', mins < 60 ? `${mins}m` : `${Math.floor(mins / 60)}h ${mins % 60}m`);
     this.setText(doc, 'stat-achcount', `${achievementCount}/${ACHIEVEMENT_LIST.length}`);
 
-    for (const mode of ['classic', 'timed', 'powerup', 'survival', 'tournament']) {
+    for (const mode of ['classic', 'timed', 'powerup', 'survival', 'tournament', 'daily']) {
       const ms = modeStats[mode] || { wins: 0, losses: 0 };
       this.setText(doc, `stat-mode-${mode}`, `${ms.wins}W / ${ms.losses}L`);
+    }
+  }
+
+  updateDailyChallenge(challenge: DailyChallenge, completed: boolean, streak: number) {
+    const doc = this.getDoc('dailychallenge');
+    if (!doc) return;
+    this.setText(doc, 'dc-icon', challenge.icon);
+    this.setText(doc, 'dc-title', challenge.title);
+    this.setText(doc, 'dc-desc', challenge.description);
+    this.setText(doc, 'dc-objective', `Objective: ${challenge.objective}`);
+    this.setText(doc, 'dc-bonus', `x${challenge.bonusMultiplier.toFixed(1)}`);
+    this.setText(doc, 'dc-streak', String(streak));
+    this.setText(doc, 'dc-status', completed ? '✅ COMPLETED TODAY' : '');
+  }
+
+  updatePuckSkins(skins: PuckSkin[], currentId: string, unlocked: Set<string>) {
+    const doc = this.getDoc('puckskins');
+    if (!doc) return;
+    skins.forEach((skin, i) => {
+      this.setText(doc, `skin-icon-${i}`, skin.icon);
+      const isUnlocked = unlocked.has(skin.id);
+      this.setText(doc, `skin-name-${i}`, isUnlocked ? skin.name : `🔒 ${skin.name}`);
+      if (skin.id === currentId) {
+        this.setText(doc, `skin-status-${i}`, 'EQUIPPED');
+      } else if (isUnlocked) {
+        this.setText(doc, `skin-status-${i}`, '');
+      } else {
+        this.setText(doc, `skin-status-${i}`, skin.unlockCondition || 'Locked');
+      }
+    });
+    const current = skins.find(s => s.id === currentId);
+    this.setText(doc, 'selected-skin-label', current ? `${current.icon} ${current.name}` : '');
+  }
+
+  updateCombo(multiplier: number, streak: number) {
+    const doc = this.getDoc('combo');
+    if (!doc) return;
+    if (multiplier > 1) {
+      this.setText(doc, 'combo-val', `x${multiplier.toFixed(1)}`);
+      this.setText(doc, 'combo-streak', streak > 0 ? `🔥 ${streak} streak` : '');
+      const entity = this.entities.get('combo');
+      if (entity?.object3D) entity.object3D.visible = true;
+    } else {
+      const entity = this.entities.get('combo');
+      if (entity?.object3D) entity.object3D.visible = false;
     }
   }
 }
@@ -524,4 +618,13 @@ export const ACHIEVEMENT_LIST = [
   { id: 'theme_explorer', name: 'Theme Explorer', desc: 'Play on all 5 table themes' },
   { id: 'comeback_king', name: 'Comeback King', desc: 'Win after being down 0-4' },
   { id: 'century_goals', name: 'Century Player', desc: 'Play 100 total games' },
+  // Round 4 achievements
+  { id: 'daily_first', name: 'Daily Warrior', desc: 'Complete your first daily challenge' },
+  { id: 'daily_streak_3', name: 'Consistent', desc: 'Complete 3 daily challenges in a row' },
+  { id: 'daily_streak_7', name: 'Weekly Grinder', desc: 'Complete 7 daily challenges in a row' },
+  { id: 'skin_changer', name: 'Fashionista', desc: 'Change your puck skin' },
+  { id: 'power_shot', name: 'Power Shot', desc: 'Land a charged power shot (VR)' },
+  { id: 'slippery_win', name: 'Ice Skater', desc: 'Win a no-friction daily challenge' },
+  { id: 'mirror_win', name: 'Mirror Master', desc: 'Win a mirror controls daily challenge' },
+  { id: 'all_modes', name: 'Jack of All Trades', desc: 'Win a game in every mode' },
 ];

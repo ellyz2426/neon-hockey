@@ -98,4 +98,9 @@
       <span class="small-btn-text">HELP</span>
     </div>
   </div>
+  <div class="btn-row">
+    <div id="skins-btn" class="small-btn" cursor="pointer" style="border-color: #ff8844;">
+      <span class="small-btn-text" style="color: #ffaa66;">PUCK SKINS</span>
+    </div>
+  </div>
 </div>

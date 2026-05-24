@@ -43,10 +43,13 @@ import { EffectsManager } from './effects';
 import { UIManager } from './ui';
 import { Environment } from './environment';
 import { TableThemes, TableTheme } from './themes';
+import { getDailyChallenge, isDailyChallengeCompleted, completeDailyChallenge, getDailyStreak, DailyChallenge, ChallengeRules } from './daily-challenge';
+import { PUCK_SKINS, PuckSkin, getUnlockedSkins, getSavedPuckSkin, savePuckSkin, getPuckSkinById } from './puck-skins';
+import { TutorialSystem } from './tutorial';
 
 // ─── TYPES ───
-export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'matchhistory' | 'stats';
-export type GameMode = 'classic' | 'timed' | 'powerup' | 'survival' | 'tournament' | 'practice';
+export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'matchhistory' | 'stats' | 'dailychallenge' | 'puckskins';
+export type GameMode = 'classic' | 'timed' | 'powerup' | 'survival' | 'tournament' | 'practice' | 'daily';
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
 interface Stats {
@@ -133,6 +136,24 @@ async function main() {
   let countdownValue = 3;
   let countdownTimer = 0;
   let isPracticeMode = false;
+  let isDailyMode = false;
+  let currentDailyChallenge: DailyChallenge | null = null;
+  let dailyRules: ChallengeRules | null = null;
+  let currentPuckSkin: PuckSkin = getPuckSkinById(getSavedPuckSkin());
+  const tutorial = new TutorialSystem();
+
+  // Slow-motion replay state
+  let slowMoActive = false;
+  let slowMoTimer = 0;
+  const SLOW_MO_DURATION = 1.2; // seconds of slow motion
+  const SLOW_MO_FACTOR = 0.25;  // time scale during slow mo
+
+  // Charged shot state (VR trigger)
+  let chargeAmount = 0;
+  let isCharging = false;
+  const CHARGE_RATE = 2.0; // charge per second
+  const MAX_CHARGE = 1.0;
+  const CHARGE_BONUS = 1.8; // velocity multiplier at full charge
 
   // Load saved state
   const savedTheme = localStorage.getItem('neon-hockey-theme');
@@ -340,11 +361,11 @@ async function main() {
   // ─── PUCK ───
   const puckGeo = new CylinderGeometry(PUCK_RADIUS, PUCK_RADIUS, PUCK_HEIGHT, 24);
   const puckMat = new MeshStandardMaterial({
-    color: new Color(theme.puckColor),
-    emissive: new Color(theme.puckColor),
-    emissiveIntensity: 0.8,
-    metalness: 0.3,
-    roughness: 0.4,
+    color: new Color(currentPuckSkin.color),
+    emissive: new Color(currentPuckSkin.emissiveColor),
+    emissiveIntensity: currentPuckSkin.emissiveIntensity,
+    metalness: currentPuckSkin.metalness,
+    roughness: currentPuckSkin.roughness,
   });
   const puck = new Mesh(puckGeo, puckMat);
   puck.position.set(0, PUCK_HEIGHT / 2 + 0.002, 0);
@@ -353,9 +374,9 @@ async function main() {
   // Puck glow
   const puckGlowGeo = new CylinderGeometry(PUCK_RADIUS * 1.5, PUCK_RADIUS * 1.5, 0.003, 24);
   const puckGlowMat = new MeshBasicMaterial({
-    color: new Color(theme.puckColor),
+    color: new Color(currentPuckSkin.glowColor),
     transparent: true,
-    opacity: 0.3,
+    opacity: currentPuckSkin.glowOpacity,
     blending: AdditiveBlending,
   });
   const puckGlow = new Mesh(puckGlowGeo, puckGlowMat);
@@ -459,25 +480,58 @@ async function main() {
     timedSeconds = 60;
     isPowerUpMode = gameMode === 'powerup';
     isPracticeMode = gameMode === 'practice';
+    isDailyMode = gameMode === 'daily';
     stats.maxDeficit = 0;
+    slowMoActive = false;
+    slowMoTimer = 0;
+    chargeAmount = 0;
+    isCharging = false;
     resetPuck();
     playerMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, TABLE_LENGTH * 0.35);
     cpuMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, -TABLE_LENGTH * 0.35);
     powerUps.clearAll();
     if (isPowerUpMode) powerUps.scheduleSpawn();
 
+    // Apply daily challenge rules
+    if (isDailyMode && dailyRules) {
+      if (dailyRules.timeLimit) timedSeconds = dailyRules.timeLimit;
+      if (!dailyRules.noPowerUps && gameMode === 'daily') {
+        // Daily challenges don't have power-ups unless explicitly allowed
+      }
+      if (dailyRules.tinyMallet) {
+        playerMallet.scale.setScalar(0.7);
+        playerRing.scale.setScalar(0.7);
+      }
+      if (dailyRules.bigPuck) {
+        puck.scale.setScalar(1.5);
+        puckGlow.scale.setScalar(1.5);
+      }
+    }
+
     // Hide CPU in practice mode
     cpuMallet.visible = !isPracticeMode;
     cpuRing.visible = !isPracticeMode;
 
-    // Reset mallet scales
-    playerMallet.scale.setScalar(1);
+    // Reset mallet scales (unless daily rules override)
+    if (!isDailyMode || !dailyRules?.tinyMallet) {
+      playerMallet.scale.setScalar(1);
+      playerRing.scale.setScalar(1);
+    }
     cpuMallet.scale.setScalar(1);
-    playerRing.scale.setScalar(1);
     cpuRing.scale.setScalar(1);
+    if (!isDailyMode || !dailyRules?.bigPuck) {
+      puck.scale.setScalar(1);
+      puckGlow.scale.setScalar(1);
+    }
 
     audio.playGameStart();
     changeState('playing');
+
+    // Start tutorial on first game
+    if (tutorial.shouldShow()) {
+      const isVR = !!(world as any).renderer?.xr?.isPresenting;
+      tutorial.start(isVR, (text, dur) => ui.showMessage(text, dur));
+    }
   }
 
   function startGameWithCountdown() {
@@ -491,7 +545,12 @@ async function main() {
     timedSeconds = 60;
     isPowerUpMode = gameMode === 'powerup';
     isPracticeMode = gameMode === 'practice';
+    isDailyMode = gameMode === 'daily';
     stats.maxDeficit = 0;
+    slowMoActive = false;
+    slowMoTimer = 0;
+    chargeAmount = 0;
+    isCharging = false;
     resetPuck();
     playerMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, TABLE_LENGTH * 0.35);
     cpuMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, -TABLE_LENGTH * 0.35);
@@ -500,9 +559,30 @@ async function main() {
     cpuMallet.visible = !isPracticeMode;
     cpuRing.visible = !isPracticeMode;
 
-    playerMallet.scale.setScalar(1);
+    // Apply daily challenge rules
+    if (isDailyMode && dailyRules) {
+      if (dailyRules.timeLimit) timedSeconds = dailyRules.timeLimit;
+      if (dailyRules.tinyMallet) {
+        playerMallet.scale.setScalar(0.7);
+        playerRing.scale.setScalar(0.7);
+      } else {
+        playerMallet.scale.setScalar(1);
+        playerRing.scale.setScalar(1);
+      }
+      if (dailyRules.bigPuck) {
+        puck.scale.setScalar(1.5);
+        puckGlow.scale.setScalar(1.5);
+      } else {
+        puck.scale.setScalar(1);
+        puckGlow.scale.setScalar(1);
+      }
+    } else {
+      playerMallet.scale.setScalar(1);
+      playerRing.scale.setScalar(1);
+      puck.scale.setScalar(1);
+      puckGlow.scale.setScalar(1);
+    }
     cpuMallet.scale.setScalar(1);
-    playerRing.scale.setScalar(1);
     cpuRing.scale.setScalar(1);
 
     startCountdown();
@@ -519,9 +599,10 @@ async function main() {
     stats.totalPlayTime += gameTime;
 
     // Track mode stats
-    if (!stats.modeStats[gameMode]) stats.modeStats[gameMode] = { wins: 0, losses: 0 };
-    if (won) stats.modeStats[gameMode].wins++;
-    else stats.modeStats[gameMode].losses++;
+    const modeKey = isDailyMode ? 'daily' : gameMode;
+    if (!stats.modeStats[modeKey]) stats.modeStats[modeKey] = { wins: 0, losses: 0 };
+    if (won) stats.modeStats[modeKey].wins++;
+    else stats.modeStats[modeKey].losses++;
 
     // Track theme usage
     const themesArr = Array.isArray(stats.themesPlayed) ? stats.themesPlayed : [];
@@ -537,7 +618,7 @@ async function main() {
       playerScore,
       cpuScore,
       won,
-      mode: gameMode,
+      mode: isDailyMode ? 'daily' : gameMode,
       difficulty,
       date: new Date().toISOString(),
       combo: comboMultiplier,
@@ -548,6 +629,22 @@ async function main() {
     saveToLeaderboard();
 
     checkAchievements(won);
+
+    // Daily challenge completion
+    if (isDailyMode && won && currentDailyChallenge) {
+      let passed = true;
+      if (dailyRules?.maxConceded !== undefined && cpuScore > dailyRules.maxConceded) {
+        passed = false;
+      }
+      if (passed) {
+        completeDailyChallenge();
+        unlockAchievement('daily_first');
+        const streak = getDailyStreak();
+        if (streak >= 3) unlockAchievement('daily_streak_3');
+        if (streak >= 7) unlockAchievement('daily_streak_7');
+        ui.showMessage(`Daily Challenge Complete! Streak: ${streak}`, 3000);
+      }
+    }
 
     if (gameMode === 'tournament') {
       if (won) {
@@ -562,8 +659,16 @@ async function main() {
       }
     }
 
+    // Reset daily modifiers
+    if (isDailyMode) {
+      puck.scale.setScalar(1);
+      puckGlow.scale.setScalar(1);
+      playerMallet.scale.setScalar(1);
+      playerRing.scale.setScalar(1);
+    }
+
     changeState('gameover');
-    ui.updateGameOver(playerScore, cpuScore, won, gameMode, comboMultiplier);
+    ui.updateGameOver(playerScore, cpuScore, won, isDailyMode ? 'daily' : gameMode, comboMultiplier);
     audio.playGameEnd(won);
   }
 
@@ -586,6 +691,18 @@ async function main() {
       return;
     }
 
+    // Daily challenge: check max conceded rule during play
+    if (isDailyMode && dailyRules?.maxConceded !== undefined && !playerScored) {
+      if (cpuScore + 1 > dailyRules.maxConceded) {
+        // Will exceed allowed goals — game continues but mark as failed at end
+      }
+    }
+
+    // Trigger slow-motion replay
+    slowMoActive = true;
+    slowMoTimer = SLOW_MO_DURATION;
+    effects.triggerShake(playerScored ? 0.02 : 0.03, 0.5);
+
     if (playerScored) {
       playerScore++;
       currentStreak++;
@@ -607,6 +724,9 @@ async function main() {
       audio.playGoalConceded();
     }
 
+    // Update combo display
+    ui.updateCombo(comboMultiplier, currentStreak);
+
     // Notify AI for adaptive difficulty
     ai.onGoal(playerScored);
 
@@ -619,9 +739,17 @@ async function main() {
     }
 
     // Check win condition
-    if (gameMode === 'classic' || gameMode === 'powerup' || gameMode === 'tournament') {
-      if (playerScore >= SCORE_TO_WIN) { endGame(true); return; }
-      if (cpuScore >= SCORE_TO_WIN) { endGame(false); return; }
+    const targetScore = (isDailyMode && dailyRules?.targetScore) ? dailyRules.targetScore : SCORE_TO_WIN;
+    if (gameMode === 'classic' || gameMode === 'powerup' || gameMode === 'tournament' || isDailyMode) {
+      if (isDailyMode && dailyRules?.timeLimit) {
+        // Timed daily: check score + time
+        if (playerScore >= targetScore) { endGame(true); return; }
+      } else {
+        if (playerScore >= targetScore) { endGame(true); return; }
+        if (cpuScore >= targetScore) { endGame(false); return; }
+      }
+    } else if (gameMode === 'timed') {
+      // Time-based: no score limit, just play
     } else if (gameMode === 'survival') {
       if (!playerScored) {
         survivalBalls--;
@@ -665,6 +793,17 @@ async function main() {
     const themesArr = Array.isArray(stats.themesPlayed) ? stats.themesPlayed : [];
     if (themesArr.length >= 5) unlockAchievement('theme_explorer');
     if (won && stats.maxDeficit >= 4) unlockAchievement('comeback_king');
+
+    // Daily challenge specific
+    if (isDailyMode && won) {
+      if (dailyRules?.noFriction) unlockAchievement('slippery_win');
+      if (dailyRules?.mirrorControls) unlockAchievement('mirror_win');
+    }
+
+    // All modes achievement
+    const allModes = ['classic', 'timed', 'powerup', 'survival', 'tournament', 'daily'];
+    const allPlayed = allModes.every(m => stats.modeStats[m]?.wins > 0);
+    if (allPlayed) unlockAchievement('all_modes');
   }
 
   // ─── LEADERBOARD ───
@@ -693,13 +832,23 @@ async function main() {
     centerLineMat.color.set(t.accentColor);
     centerCircleMat.color.set(t.accentColor);
     centerDotMat.color.set(t.accentColor);
-    puckMat.color.set(t.puckColor);
-    puckMat.emissive.set(t.puckColor);
-    puckGlowMat.color.set(t.puckColor);
 
     env.applyTheme(t);
     effects.setTheme(t);
     powerUps.setTheme(t);
+  }
+
+  // ─── APPLY PUCK SKIN ───
+  function applyPuckSkin(skin: PuckSkin) {
+    currentPuckSkin = skin;
+    savePuckSkin(skin.id);
+    puckMat.color.set(skin.color);
+    puckMat.emissive.set(skin.emissiveColor);
+    puckMat.emissiveIntensity = skin.emissiveIntensity;
+    puckMat.metalness = skin.metalness;
+    puckMat.roughness = skin.roughness;
+    puckGlowMat.color.set(skin.glowColor);
+    effects.setTrailColor(skin.trailColor);
   }
 
   // ─── UI CALLBACKS ───
@@ -761,6 +910,37 @@ async function main() {
   ui.onSetVolume = (type: string, delta: number) => {
     audio.adjustVolume(type, delta);
   };
+  ui.onShowDailyChallenge = () => {
+    const challenge = getDailyChallenge();
+    currentDailyChallenge = challenge;
+    dailyRules = challenge.rules;
+    const completed = isDailyChallengeCompleted();
+    const streak = getDailyStreak();
+    ui.updateDailyChallenge(challenge, completed, streak);
+    changeState('dailychallenge');
+  };
+  ui.onPlayDailyChallenge = () => {
+    if (!currentDailyChallenge || isDailyChallengeCompleted()) return;
+    gameMode = 'daily';
+    dailyRules = currentDailyChallenge.rules;
+    difficulty = dailyRules!.difficulty;
+    ai.setDifficulty(difficulty);
+    if (dailyRules!.timeLimit) timedSeconds = dailyRules!.timeLimit;
+    startGameWithCountdown();
+  };
+  ui.onShowPuckSkins = () => {
+    const unlocked = getUnlockedSkins(achievementsUnlocked, stats);
+    ui.updatePuckSkins(PUCK_SKINS, currentPuckSkin.id, unlocked);
+    changeState('puckskins');
+  };
+  ui.onSelectPuckSkin = (skinId: string) => {
+    const unlocked = getUnlockedSkins(achievementsUnlocked, stats);
+    if (!unlocked.has(skinId)) return;
+    const skin = getPuckSkinById(skinId);
+    applyPuckSkin(skin);
+    ui.updatePuckSkins(PUCK_SKINS, skinId, unlocked);
+    unlockAchievement('skin_changer');
+  };
 
   // ─── UPDATE LOOP ───
   let prevTime = performance.now();
@@ -778,8 +958,8 @@ async function main() {
     prevTime = now;
 
     // Update effects & environment always
-    effects.update(dt);
-    env.update(dt);
+    effects.update(effectiveDt);
+    env.update(effectiveDt);
 
     // Boundary glow pulse
     const glowPulse = 0.3 + Math.sin(performance.now() / 1000 * 1.5) * 0.15;
@@ -809,28 +989,48 @@ async function main() {
 
     if (gameState !== 'playing') return;
 
-    gameTime += dt;
-
-    // Combo decay
-    if (comboTimer > 0) {
-      comboTimer -= dt;
-      if (comboTimer <= 0) {
-        comboMultiplier = 1;
-        currentStreak = 0;
+    // Slow-motion effect
+    let effectiveDt = dt;
+    if (slowMoActive) {
+      slowMoTimer -= dt;
+      if (slowMoTimer <= 0) {
+        slowMoActive = false;
+      } else {
+        effectiveDt = dt * SLOW_MO_FACTOR;
       }
     }
 
-    // Timed mode countdown
-    if (gameMode === 'timed') {
-      timedSeconds -= dt;
+    gameTime += effectiveDt;
+
+    // Tutorial update
+    tutorial.update(effectiveDt);
+
+    // Combo decay
+    if (comboTimer > 0) {
+      comboTimer -= effectiveDt;
+      if (comboTimer <= 0) {
+        comboMultiplier = 1;
+        currentStreak = 0;
+        ui.updateCombo(comboMultiplier, currentStreak);
+      }
+    }
+
+    // Timed mode countdown (including daily timed)
+    if (gameMode === 'timed' || (isDailyMode && dailyRules?.timeLimit)) {
+      timedSeconds -= effectiveDt;
       // Beep on last 5 seconds
       if (timedSeconds <= 5 && timedSeconds > 0) {
         const sec = Math.ceil(timedSeconds);
-        const prevSec = Math.ceil(timedSeconds + dt);
+        const prevSec = Math.ceil(timedSeconds + effectiveDt);
         if (sec !== prevSec) audio.playCountdownTick();
       }
       if (timedSeconds <= 0) {
-        endGame(playerScore > cpuScore);
+        if (isDailyMode) {
+          const targetScore = dailyRules?.targetScore || SCORE_TO_WIN;
+          endGame(playerScore >= targetScore);
+        } else {
+          endGame(playerScore > cpuScore);
+        }
         return;
       }
     }
@@ -847,13 +1047,15 @@ async function main() {
     const effectiveCpuMalletR = MALLET_RADIUS * cScale;
 
     // ─── Player mallet control (browser) ───
+    const mirrorX = (isDailyMode && dailyRules?.mirrorControls) ? -1 : 1;
     const camera = (world as any).renderer?.xr?.isPresenting ? null : (world as any).camera;
     if (camera) {
       raycaster.setFromCamera(mousePos, camera);
       const hits = raycaster.intersectObject(tablePlaneMesh);
       if (hits.length > 0) {
         const point = tableGroup.worldToLocal(hits[0].point.clone());
-        const targetX = Math.max(-TABLE_WIDTH / 2 + effectiveMalletR, Math.min(TABLE_WIDTH / 2 - effectiveMalletR, point.x));
+        const rawX = point.x * mirrorX;
+        const targetX = Math.max(-TABLE_WIDTH / 2 + effectiveMalletR, Math.min(TABLE_WIDTH / 2 - effectiveMalletR, rawX));
         const targetZ = Math.max(0.05, Math.min(TABLE_LENGTH / 2 - effectiveMalletR, point.z));
 
         prevPlayerMalletX = playerMallet.position.x;
@@ -882,7 +1084,8 @@ async function main() {
         rSpace.object3D.getWorldPosition(gripPos);
         const localPos = tableGroup.worldToLocal(gripPos.clone());
 
-        const targetX = Math.max(-TABLE_WIDTH / 2 + effectiveMalletR, Math.min(TABLE_WIDTH / 2 - effectiveMalletR, localPos.x));
+        const rawX = localPos.x * mirrorX;
+        const targetX = Math.max(-TABLE_WIDTH / 2 + effectiveMalletR, Math.min(TABLE_WIDTH / 2 - effectiveMalletR, rawX));
         const targetZ = Math.max(0.05, Math.min(TABLE_LENGTH / 2 - effectiveMalletR, localPos.z));
 
         prevPlayerMalletX = playerMallet.position.x;
@@ -893,8 +1096,48 @@ async function main() {
         playerRing.position.z = playerMallet.position.z;
       }
 
+      // Charged power shot with trigger
+      const triggerHeld = rightGamepad.getButtonPressed(InputComponent.Trigger);
+      const triggerReleased = rightGamepad.getButtonUp(InputComponent.Trigger);
+      if (triggerHeld) {
+        if (!isCharging) isCharging = true;
+        chargeAmount = Math.min(MAX_CHARGE, chargeAmount + CHARGE_RATE * effectiveDt);
+        // Visual feedback: mallet glow intensifies
+        playerMalletMat.emissiveIntensity = 0.6 + chargeAmount * 0.8;
+      }
+      if (triggerReleased && isCharging) {
+        isCharging = false;
+        // If puck is near mallet, apply charge bonus
+        const chargeDx = puck.position.x - playerMallet.position.x;
+        const chargeDz = puck.position.z - playerMallet.position.z;
+        const chargeDist = Math.sqrt(chargeDx * chargeDx + chargeDz * chargeDz);
+        if (chargeDist < effectiveMalletR * 2 + PUCK_RADIUS) {
+          const chargeBonus = 1 + (CHARGE_BONUS - 1) * chargeAmount;
+          puckVx *= chargeBonus;
+          puckVz *= chargeBonus;
+          const spd = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
+          if (spd > MAX_PUCK_SPEED * 1.3) {
+            puckVx = (puckVx / spd) * MAX_PUCK_SPEED * 1.3;
+            puckVz = (puckVz / spd) * MAX_PUCK_SPEED * 1.3;
+          }
+          audio.playChargedShot();
+          effects.chargedShotEffect(playerMallet.position.x, playerMallet.position.z);
+          ui.showMessage('POWER SHOT!', 1000);
+          unlockAchievement('power_shot');
+        }
+        chargeAmount = 0;
+        playerMalletMat.emissiveIntensity = 0.6;
+      }
+
       if (rightGamepad.getButtonDown(InputComponent.B_Button)) {
         changeState('paused');
+      }
+    } else {
+      // Reset charge state if no controller
+      if (isCharging) {
+        isCharging = false;
+        chargeAmount = 0;
+        playerMalletMat.emissiveIntensity = 0.6;
       }
     }
 
@@ -935,7 +1178,8 @@ async function main() {
     }
 
     const substeps = 4;
-    const subDt = dt / substeps;
+    const subDt = effectiveDt / substeps;
+    const effectiveMaxSpeed = (isDailyMode && dailyRules?.fastPuck) ? MAX_PUCK_SPEED * 1.5 : MAX_PUCK_SPEED;
     for (let s = 0; s < substeps; s++) {
       puck.position.x += puckVx * subDt;
       puck.position.z += puckVz * subDt;
@@ -990,11 +1234,11 @@ async function main() {
         puckVx = puckVx - 2 * relVn * nx + malletVx * 0.6;
         puckVz = puckVz - 2 * relVn * nz + malletVz * 0.6;
         const spd = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
-        if (spd > MAX_PUCK_SPEED) {
-          puckVx = (puckVx / spd) * MAX_PUCK_SPEED;
-          puckVz = (puckVz / spd) * MAX_PUCK_SPEED;
+        if (spd > effectiveMaxSpeed) {
+          puckVx = (puckVx / spd) * effectiveMaxSpeed;
+          puckVz = (puckVz / spd) * effectiveMaxSpeed;
         }
-        audio.playMalletHit(spd / MAX_PUCK_SPEED);
+        audio.playMalletHit(spd / effectiveMaxSpeed);
         effects.malletHitEffect(puck.position.x, puck.position.z, true);
       }
 
@@ -1015,18 +1259,19 @@ async function main() {
           puckVx = puckVx - 2 * relVn * nx + cpuVx * 0.6;
           puckVz = puckVz - 2 * relVn * nz + cpuVz * 0.6;
           const spd = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
-          if (spd > MAX_PUCK_SPEED) {
-            puckVx = (puckVx / spd) * MAX_PUCK_SPEED;
-            puckVz = (puckVz / spd) * MAX_PUCK_SPEED;
+          if (spd > effectiveMaxSpeed) {
+            puckVx = (puckVx / spd) * effectiveMaxSpeed;
+            puckVz = (puckVz / spd) * effectiveMaxSpeed;
           }
-          audio.playMalletHit(spd / MAX_PUCK_SPEED);
+          audio.playMalletHit(spd / effectiveMaxSpeed);
           effects.malletHitEffect(puck.position.x, puck.position.z, false);
         }
       }
 
-      // Friction
-      puckVx *= FRICTION;
-      puckVz *= FRICTION;
+      // Friction (skip if no-friction daily rule)
+      const frictionVal = (isDailyMode && dailyRules?.noFriction) ? 1.0 : FRICTION;
+      puckVx *= frictionVal;
+      puckVz *= frictionVal;
       const totalSpd = Math.sqrt(puckVx * puckVx + puckVz * puckVz);
       if (totalSpd < 0.005) { puckVx = 0; puckVz = 0; }
     }
@@ -1039,11 +1284,11 @@ async function main() {
     (puckGlowMat as any).opacity = 0.2 + Math.min(0.5, speed * 0.15);
 
     // Puck trail
-    effects.updateTrail(dt, puck.position.x, puck.position.z, speed);
+    effects.updateTrail(effectiveDt, puck.position.x, puck.position.z, speed);
 
     // Power-up mode
     if (isPowerUpMode) {
-      const collected = powerUps.update(dt, puck.position.x, puck.position.z,
+      const collected = powerUps.update(effectiveDt, puck.position.x, puck.position.z,
         playerMallet.position.x, playerMallet.position.z);
       if (collected) {
         stats.powerUpsCollected++;

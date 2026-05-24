@@ -165,7 +165,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Trigger"
+                  "Trigger Hold"
                 ],
                 "properties": {
                   "class": "key-text"
@@ -176,7 +176,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Select menu item"
+                  "Charge power shot"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -433,6 +433,38 @@
               "class": "control-row"
             },
             "dataUid": "uid-40"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Daily"
+                ],
+                "properties": {
+                  "class": "key-text"
+                },
+                "dataUid": "uid-44"
+              },
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Unique challenge each day"
+                ],
+                "properties": {
+                  "class": "action-text"
+                },
+                "dataUid": "uid-45"
+              }
+            ],
+            "properties": {
+              "class": "control-row"
+            },
+            "dataUid": "uid-43"
           }
         ],
         "properties": {
@@ -453,7 +485,7 @@
             "properties": {
               "class": "back-text"
             },
-            "dataUid": "uid-44"
+            "dataUid": "uid-47"
           }
         ],
         "properties": {
@@ -461,7 +493,7 @@
           "class": "back-btn",
           "cursor": "pointer"
         },
-        "dataUid": "uid-43"
+        "dataUid": "uid-46"
       }
     ],
     "properties": {
@@ -666,7 +698,7 @@
         "column": 0
       },
       "end": {
-        "line": 96,
+        "line": 97,
         "column": 6
       }
     },
@@ -827,7 +859,7 @@
       },
       "end": {
         "line": 81,
-        "column": 121
+        "column": 127
       }
     },
     "uid-18": {
@@ -837,17 +869,17 @@
       },
       "end": {
         "line": 81,
-        "column": 66
+        "column": 71
       }
     },
     "uid-19": {
       "start": {
         "line": 81,
-        "column": 66
+        "column": 71
       },
       "end": {
         "line": 81,
-        "column": 115
+        "column": 121
       }
     },
     "uid-20": {
@@ -916,7 +948,7 @@
         "column": 2
       },
       "end": {
-        "line": 92,
+        "line": 93,
         "column": 8
       }
     },
@@ -1082,21 +1114,51 @@
     },
     "uid-43": {
       "start": {
-        "line": 93,
-        "column": 2
+        "line": 92,
+        "column": 4
       },
       "end": {
-        "line": 95,
-        "column": 8
+        "line": 92,
+        "column": 128
       }
     },
     "uid-44": {
       "start": {
+        "line": 92,
+        "column": 29
+      },
+      "end": {
+        "line": 92,
+        "column": 64
+      }
+    },
+    "uid-45": {
+      "start": {
+        "line": 92,
+        "column": 64
+      },
+      "end": {
+        "line": 92,
+        "column": 122
+      }
+    },
+    "uid-46": {
+      "start": {
         "line": 94,
+        "column": 2
+      },
+      "end": {
+        "line": 96,
+        "column": 8
+      }
+    },
+    "uid-47": {
+      "start": {
+        "line": 95,
         "column": 4
       },
       "end": {
-        "line": 94,
+        "line": 95,
         "column": 39
       }
     }

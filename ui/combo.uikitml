@@ -1,0 +1,30 @@
+<style>
+  .panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-color: #ffcc00;
+    border-width: 0.1;
+    border-radius: 1;
+  }
+  .combo-label {
+    font-size: 1.5;
+    color: #aaaaaa;
+  }
+  .combo-value {
+    font-size: 4;
+    color: #ffcc00;
+    font-weight: bold;
+  }
+  .streak-text {
+    font-size: 1.8;
+    color: #ff8844;
+  }
+</style>
+<div class="panel">
+  <span class="combo-label">COMBO</span>
+  <span id="combo-val" class="combo-value">x1.0</span>
+  <span id="combo-streak" class="streak-text"></span>
+</div>

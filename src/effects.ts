@@ -34,6 +34,7 @@ export class EffectsManager {
   private trailTimer = 0;
   private trailInterval = 0.02; // spawn every 20ms when moving fast
   private maxTrail = 30;
+  private trailColor: string | null = null; // override from puck skin
 
   // Screen shake
   private shakeIntensity = 0;
@@ -50,6 +51,7 @@ export class EffectsManager {
   }
 
   setTheme(t: TableTheme) { this.theme = t; }
+  setTrailColor(color: string) { this.trailColor = color; }
 
   // ─── Screen Shake ───
   triggerShake(intensity: number, duration: number) {
@@ -85,8 +87,9 @@ export class EffectsManager {
     if (speed > 0.3 && this.trailTimer >= this.trailInterval && this.trail.length < this.maxTrail) {
       this.trailTimer = 0;
       const brightness = Math.min(1, speed / 3);
+      const trailClr = this.trailColor || this.theme.puckColor;
       const mat = new MeshBasicMaterial({
-        color: new Color(this.theme.puckColor),
+        color: new Color(trailClr),
         transparent: true,
         opacity: 0.4 * brightness,
         blending: AdditiveBlending,
@@ -221,6 +224,33 @@ export class EffectsManager {
       this.spawnParticle(x, 0.02, z, '#00ffaa', 0.7, 0.4);
     }
     this.triggerShake(0.008, 0.2);
+  }
+
+  // Charged power shot effect
+  chargedShotEffect(x: number, z: number) {
+    for (let i = 0; i < 16; i++) {
+      this.spawnParticle(x, 0.04, z, '#ffffff', 1.5, 0.8);
+    }
+    for (let i = 0; i < 8; i++) {
+      this.spawnParticle(x, 0.03, z, '#ffcc00', 1.0, 0.6);
+    }
+
+    // Flash ring for charged shot
+    const ringGeo = new RingGeometry(0.03, 0.25, 24);
+    const ringMat = new MeshBasicMaterial({
+      color: new Color('#ffcc00'),
+      transparent: true,
+      opacity: 0.9,
+      blending: AdditiveBlending,
+      side: 2,
+    });
+    const ring = new Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(x, 0.005, z);
+    this.parent.add(ring);
+    this.goalFlashMeshes.push(ring);
+
+    this.triggerShake(0.012, 0.2);
   }
 
   update(dt: number) {

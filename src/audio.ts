@@ -219,4 +219,26 @@ export class AudioManager {
     // Warning beep
     this.playSFX(440, 'square', 0.08, 0.15);
   }
+
+  playChargedShot() {
+    this.ensure();
+    // Charged shot — deep impact + rising sweep
+    this.playSFX(150, 'sawtooth', 0.2, 0.4);
+    this.playSFX(300, 'sine', 0.15, 0.3);
+    this.playNoise(0.15, 0.25, 1500);
+    // Rising tone
+    if (this.ctx && this.sfxGain) {
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.15);
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.2);
+    }
+  }
 }

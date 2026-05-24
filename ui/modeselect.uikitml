@@ -88,6 +88,10 @@
     <span class="mode-name">PRACTICE</span>
     <span class="mode-desc">Free play, no opponent</span>
   </div>
+  <div id="daily-btn" class="mode-btn" cursor="pointer" style="background-color: rgba(200, 120, 0, 0.25); border-color: #ffaa00;">
+    <span class="mode-name" style="color: #ffcc00;">⭐ DAILY CHALLENGE</span>
+    <span class="mode-desc" style="color: #aa8844;">New challenge every day</span>
+  </div>
   <div id="mode-back-btn" class="back-btn" cursor="pointer">
     <span class="back-text">BACK</span>
   </div>

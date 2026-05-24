@@ -1,0 +1,121 @@
+<style>
+  .panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3;
+    background-color: rgba(0, 0, 0, 0.92);
+    border-color: #ffaa00;
+    border-width: 0.15;
+    border-radius: 1.5;
+    gap: 1.5;
+  }
+  .header {
+    font-size: 3.5;
+    color: #ffaa00;
+    font-weight: bold;
+  }
+  .icon {
+    font-size: 5;
+  }
+  .title {
+    font-size: 2.8;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .desc {
+    font-size: 1.8;
+    color: #bbbbbb;
+  }
+  .objective {
+    font-size: 2.2;
+    color: #00ffcc;
+    font-weight: bold;
+  }
+  .bonus-label {
+    font-size: 1.5;
+    color: #888888;
+  }
+  .bonus {
+    font-size: 2;
+    color: #ffcc00;
+    font-weight: bold;
+  }
+  .streak-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1;
+    align-items: center;
+  }
+  .streak-label {
+    font-size: 1.5;
+    color: #ff6644;
+  }
+  .streak-val {
+    font-size: 2;
+    color: #ff8844;
+    font-weight: bold;
+  }
+  .status-text {
+    font-size: 2;
+    color: #44ff44;
+    font-weight: bold;
+  }
+  .btn-row {
+    display: flex;
+    flex-direction: row;
+    gap: 2;
+    margin-top: 1;
+  }
+  .btn {
+    padding-x: 3;
+    padding-y: 1.2;
+    background-color: rgba(255, 170, 0, 0.3);
+    border-color: #ffaa00;
+    border-width: 0.1;
+    border-radius: 0.8;
+    cursor: pointer;
+  }
+  .btn-text {
+    font-size: 2;
+    color: #ffaa00;
+    font-weight: bold;
+  }
+  .btn-back {
+    padding-x: 3;
+    padding-y: 1.2;
+    background-color: rgba(100, 100, 100, 0.3);
+    border-color: #666666;
+    border-width: 0.1;
+    border-radius: 0.8;
+    cursor: pointer;
+  }
+  .btn-back-text {
+    font-size: 2;
+    color: #aaaaaa;
+  }
+</style>
+<div class="panel">
+  <span class="header">DAILY CHALLENGE</span>
+  <span id="dc-icon" class="icon">🏆</span>
+  <span id="dc-title" class="title">Challenge Title</span>
+  <span id="dc-desc" class="desc">Challenge description</span>
+  <span id="dc-objective" class="objective">Objective: Win 7-0</span>
+  <div class="streak-row">
+    <span class="bonus-label">Bonus:</span>
+    <span id="dc-bonus" class="bonus">x2.0</span>
+  </div>
+  <div class="streak-row">
+    <span class="streak-label">Daily Streak:</span>
+    <span id="dc-streak" class="streak-val">0</span>
+  </div>
+  <span id="dc-status" class="status-text"></span>
+  <div class="btn-row">
+    <div id="dc-play-btn" class="btn" cursor="pointer">
+      <span class="btn-text">PLAY</span>
+    </div>
+    <div id="dc-back-btn" class="btn-back" cursor="pointer">
+      <span class="btn-back-text">BACK</span>
+    </div>
+  </div>
+</div>

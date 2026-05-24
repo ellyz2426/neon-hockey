@@ -79,7 +79,7 @@
   <div class="controls-section">
     <span class="section-title">VR CONTROLS</span>
     <div class="control-row"><span class="key-text">Right Hand</span><span class="action-text">Move mallet</span></div>
-    <div class="control-row"><span class="key-text">Trigger</span><span class="action-text">Select menu item</span></div>
+    <div class="control-row"><span class="key-text">Trigger Hold</span><span class="action-text">Charge power shot</span></div>
     <div class="control-row"><span class="key-text">B Button</span><span class="action-text">Pause</span></div>
     <div class="control-row"><span class="key-text">Thumbstick</span><span class="action-text">Navigate menus</span></div>
   </div>
@@ -90,6 +90,7 @@
     <div class="control-row"><span class="key-text">Power-Up</span><span class="action-text">Collect table power-ups</span></div>
     <div class="control-row"><span class="key-text">Survival</span><span class="action-text">3 lives, max score</span></div>
     <div class="control-row"><span class="key-text">Tournament</span><span class="action-text">4 rounds, harder each</span></div>
+    <div class="control-row"><span class="key-text">Daily</span><span class="action-text">Unique challenge each day</span></div>
   </div>
   <div id="help-back-btn" class="back-btn" cursor="pointer">
     <span class="back-text">BACK</span>

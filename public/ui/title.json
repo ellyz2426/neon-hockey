@@ -215,6 +215,45 @@
           "class": "btn-row"
         },
         "dataUid": "uid-16"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "PUCK SKINS"
+                ],
+                "properties": {
+                  "class": "small-btn-text",
+                  "style": {
+                    "color": "#ffaa66"
+                  }
+                },
+                "dataUid": "uid-23"
+              }
+            ],
+            "properties": {
+              "id": "skins-btn",
+              "class": "small-btn",
+              "cursor": "pointer",
+              "style": {
+                "borderColor": "#ff8844"
+              }
+            },
+            "dataUid": "uid-22"
+          }
+        ],
+        "properties": {
+          "class": "btn-row"
+        },
+        "dataUid": "uid-21"
       }
     ],
     "properties": {
@@ -395,7 +434,7 @@
         "column": 0
       },
       "end": {
-        "line": 100,
+        "line": 105,
         "column": 6
       }
     },
@@ -587,6 +626,36 @@
       "end": {
         "line": 97,
         "column": 46
+      }
+    },
+    "uid-21": {
+      "start": {
+        "line": 100,
+        "column": 2
+      },
+      "end": {
+        "line": 104,
+        "column": 8
+      }
+    },
+    "uid-22": {
+      "start": {
+        "line": 101,
+        "column": 4
+      },
+      "end": {
+        "line": 103,
+        "column": 10
+      }
+    },
+    "uid-23": {
+      "start": {
+        "line": 102,
+        "column": 6
+      },
+      "end": {
+        "line": 102,
+        "column": 76
       }
     }
   }
