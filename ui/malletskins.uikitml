@@ -1,0 +1,125 @@
+<style>
+  .panel {
+    display: flex;
+    flex-direction: column;
+    padding: 3;
+    background-color: rgba(0, 10, 20, 0.92);
+    border-color: #00ff88;
+    border-width: 0.15;
+    border-radius: 1.5;
+    gap: 1.5;
+    align-items: center;
+  }
+  .title {
+    font-size: 3;
+    color: #00ff88;
+    font-weight: bold;
+    text-align: center;
+  }
+  .skins-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1;
+    width: 100%;
+  }
+  .skin-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1.2;
+    border-radius: 0.8;
+    border-color: rgba(0, 255, 136, 0.3);
+    border-width: 0.08;
+    background-color: rgba(0, 255, 136, 0.05);
+    gap: 1.5;
+    cursor: pointer;
+  }
+  .skin-icon {
+    font-size: 2.5;
+    min-width: 4;
+    text-align: center;
+  }
+  .skin-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0.3;
+  }
+  .skin-name {
+    font-size: 1.8;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .skin-status {
+    font-size: 1.2;
+    color: #888888;
+  }
+  .equipped {
+    font-size: 1.2;
+    color: #00ff88;
+    font-weight: bold;
+  }
+  .locked {
+    font-size: 1.2;
+    color: #ff4444;
+  }
+  .back-btn {
+    font-size: 1.8;
+    color: #aaaaaa;
+    padding: 1;
+    border-radius: 0.5;
+    border-color: rgba(170, 170, 170, 0.3);
+    border-width: 0.08;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 1;
+  }
+</style>
+<div class="panel">
+  <span class="title">🏒 MALLET SKINS</span>
+  <div class="skins-grid">
+    <div id="ms-0" class="skin-row">
+      <span id="ms-icon-0" class="skin-icon">🟢</span>
+      <div class="skin-info">
+        <span id="ms-name-0" class="skin-name">Neon Green</span>
+        <span id="ms-status-0" class="equipped">EQUIPPED</span>
+      </div>
+    </div>
+    <div id="ms-1" class="skin-row">
+      <span id="ms-icon-1" class="skin-icon">🔵</span>
+      <div class="skin-info">
+        <span id="ms-name-1" class="skin-name">Electric Blue</span>
+        <span id="ms-status-1" class="skin-status">Available</span>
+      </div>
+    </div>
+    <div id="ms-2" class="skin-row">
+      <span id="ms-icon-2" class="skin-icon">💗</span>
+      <div class="skin-info">
+        <span id="ms-name-2" class="skin-name">Hot Pink</span>
+        <span id="ms-status-2" class="skin-status">Available</span>
+      </div>
+    </div>
+    <div id="ms-3" class="skin-row">
+      <span id="ms-icon-3" class="skin-icon">🥇</span>
+      <div class="skin-info">
+        <span id="ms-name-3" class="skin-name">Gold Rush</span>
+        <span id="ms-status-3" class="skin-status">Available</span>
+      </div>
+    </div>
+    <div id="ms-4" class="skin-row">
+      <span id="ms-icon-4" class="skin-icon">🟣</span>
+      <div class="skin-info">
+        <span id="ms-name-4" class="skin-name">Void Walker</span>
+        <span id="ms-status-4" class="locked">🔒 Win 25 games</span>
+      </div>
+    </div>
+    <div id="ms-5" class="skin-row">
+      <span id="ms-icon-5" class="skin-icon">⬜</span>
+      <div class="skin-info">
+        <span id="ms-name-5" class="skin-name">Chrome</span>
+        <span id="ms-status-5" class="locked">🔒 Unlock 20 achievements</span>
+      </div>
+    </div>
+  </div>
+  <div id="ms-back-btn" class="back-btn">← BACK</div>
+</div>

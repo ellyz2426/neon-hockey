@@ -59,7 +59,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Move mallet"
+                  "Move mallet (P1)"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -80,7 +80,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "ESC"
+                  "WASD"
                 ],
                 "properties": {
                   "class": "key-text"
@@ -91,7 +91,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Pause game"
+                  "Move mallet (P2 in 2P)"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -103,6 +103,38 @@
               "class": "control-row"
             },
             "dataUid": "uid-9"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "ESC"
+                ],
+                "properties": {
+                  "class": "key-text"
+                },
+                "dataUid": "uid-13"
+              },
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Pause game"
+                ],
+                "properties": {
+                  "class": "action-text"
+                },
+                "dataUid": "uid-14"
+              }
+            ],
+            "properties": {
+              "class": "control-row"
+            },
+            "dataUid": "uid-12"
           }
         ],
         "properties": {
@@ -123,7 +155,7 @@
             "properties": {
               "class": "section-title"
             },
-            "dataUid": "uid-13"
+            "dataUid": "uid-16"
           },
           {
             "type": "container",
@@ -138,45 +170,13 @@
                 "properties": {
                   "class": "key-text"
                 },
-                "dataUid": "uid-15"
-              },
-              {
-                "sourceTag": "span",
-                "type": "custom",
-                "children": [
-                  "Move mallet"
-                ],
-                "properties": {
-                  "class": "action-text"
-                },
-                "dataUid": "uid-16"
-              }
-            ],
-            "properties": {
-              "class": "control-row"
-            },
-            "dataUid": "uid-14"
-          },
-          {
-            "type": "container",
-            "sourceTag": "div",
-            "children": [
-              {
-                "sourceTag": "span",
-                "type": "custom",
-                "children": [
-                  "Trigger Hold"
-                ],
-                "properties": {
-                  "class": "key-text"
-                },
                 "dataUid": "uid-18"
               },
               {
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Charge power shot"
+                  "Move mallet"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -197,7 +197,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "B Button"
+                  "Trigger Hold"
                 ],
                 "properties": {
                   "class": "key-text"
@@ -208,7 +208,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Pause"
+                  "Charge power shot"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -229,7 +229,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Thumbstick"
+                  "B Button"
                 ],
                 "properties": {
                   "class": "key-text"
@@ -240,7 +240,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Navigate menus"
+                  "Pause"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -252,12 +252,44 @@
               "class": "control-row"
             },
             "dataUid": "uid-23"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Thumbstick"
+                ],
+                "properties": {
+                  "class": "key-text"
+                },
+                "dataUid": "uid-27"
+              },
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Navigate menus"
+                ],
+                "properties": {
+                  "class": "action-text"
+                },
+                "dataUid": "uid-28"
+              }
+            ],
+            "properties": {
+              "class": "control-row"
+            },
+            "dataUid": "uid-26"
           }
         ],
         "properties": {
           "class": "controls-section"
         },
-        "dataUid": "uid-12"
+        "dataUid": "uid-15"
       },
       {
         "type": "container",
@@ -272,7 +304,7 @@
             "properties": {
               "class": "section-title"
             },
-            "dataUid": "uid-27"
+            "dataUid": "uid-30"
           },
           {
             "type": "container",
@@ -287,45 +319,13 @@
                 "properties": {
                   "class": "key-text"
                 },
-                "dataUid": "uid-29"
-              },
-              {
-                "sourceTag": "span",
-                "type": "custom",
-                "children": [
-                  "First to 7 goals"
-                ],
-                "properties": {
-                  "class": "action-text"
-                },
-                "dataUid": "uid-30"
-              }
-            ],
-            "properties": {
-              "class": "control-row"
-            },
-            "dataUid": "uid-28"
-          },
-          {
-            "type": "container",
-            "sourceTag": "div",
-            "children": [
-              {
-                "sourceTag": "span",
-                "type": "custom",
-                "children": [
-                  "Time Attack"
-                ],
-                "properties": {
-                  "class": "key-text"
-                },
                 "dataUid": "uid-32"
               },
               {
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "60s, most goals wins"
+                  "First to 7 goals"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -346,7 +346,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Power-Up"
+                  "Time Attack"
                 ],
                 "properties": {
                   "class": "key-text"
@@ -357,7 +357,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Collect table power-ups"
+                  "60s, most goals wins"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -378,7 +378,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Survival"
+                  "Power-Up"
                 ],
                 "properties": {
                   "class": "key-text"
@@ -389,7 +389,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "3 lives, max score"
+                  "Collect table power-ups"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -410,7 +410,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Tournament"
+                  "Survival"
                 ],
                 "properties": {
                   "class": "key-text"
@@ -421,7 +421,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "4 rounds, harder each"
+                  "3 lives, max score"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -442,7 +442,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Daily"
+                  "Tournament"
                 ],
                 "properties": {
                   "class": "key-text"
@@ -453,7 +453,7 @@
                 "sourceTag": "span",
                 "type": "custom",
                 "children": [
-                  "Unique challenge each day"
+                  "4 rounds, harder each"
                 ],
                 "properties": {
                   "class": "action-text"
@@ -465,12 +465,76 @@
               "class": "control-row"
             },
             "dataUid": "uid-43"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "2 Player"
+                ],
+                "properties": {
+                  "class": "key-text"
+                },
+                "dataUid": "uid-47"
+              },
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Mouse vs WASD local"
+                ],
+                "properties": {
+                  "class": "action-text"
+                },
+                "dataUid": "uid-48"
+              }
+            ],
+            "properties": {
+              "class": "control-row"
+            },
+            "dataUid": "uid-46"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Daily"
+                ],
+                "properties": {
+                  "class": "key-text"
+                },
+                "dataUid": "uid-50"
+              },
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "Unique challenge each day"
+                ],
+                "properties": {
+                  "class": "action-text"
+                },
+                "dataUid": "uid-51"
+              }
+            ],
+            "properties": {
+              "class": "control-row"
+            },
+            "dataUid": "uid-49"
           }
         ],
         "properties": {
           "class": "controls-section"
         },
-        "dataUid": "uid-26"
+        "dataUid": "uid-29"
       },
       {
         "type": "container",
@@ -485,7 +549,7 @@
             "properties": {
               "class": "back-text"
             },
-            "dataUid": "uid-47"
+            "dataUid": "uid-53"
           }
         ],
         "properties": {
@@ -493,7 +557,7 @@
           "class": "back-btn",
           "cursor": "pointer"
         },
-        "dataUid": "uid-46"
+        "dataUid": "uid-52"
       }
     ],
     "properties": {
@@ -698,7 +762,7 @@
         "column": 0
       },
       "end": {
-        "line": 97,
+        "line": 99,
         "column": 6
       }
     },
@@ -728,7 +792,7 @@
         "column": 2
       },
       "end": {
-        "line": 77,
+        "line": 78,
         "column": 8
       }
     },
@@ -749,7 +813,7 @@
       },
       "end": {
         "line": 75,
-        "column": 114
+        "column": 119
       }
     },
     "uid-7": {
@@ -769,7 +833,7 @@
       },
       "end": {
         "line": 75,
-        "column": 108
+        "column": 113
       }
     },
     "uid-9": {
@@ -779,7 +843,7 @@
       },
       "end": {
         "line": 76,
-        "column": 111
+        "column": 124
       }
     },
     "uid-10": {
@@ -789,67 +853,67 @@
       },
       "end": {
         "line": 76,
-        "column": 62
+        "column": 63
       }
     },
     "uid-11": {
       "start": {
         "line": 76,
-        "column": 62
+        "column": 63
       },
       "end": {
         "line": 76,
-        "column": 105
+        "column": 118
       }
     },
     "uid-12": {
       "start": {
-        "line": 78,
-        "column": 2
+        "line": 77,
+        "column": 4
       },
       "end": {
-        "line": 84,
-        "column": 8
+        "line": 77,
+        "column": 111
       }
     },
     "uid-13": {
       "start": {
-        "line": 79,
-        "column": 4
+        "line": 77,
+        "column": 29
       },
       "end": {
-        "line": 79,
-        "column": 50
+        "line": 77,
+        "column": 62
       }
     },
     "uid-14": {
       "start": {
-        "line": 80,
-        "column": 4
+        "line": 77,
+        "column": 62
       },
       "end": {
-        "line": 80,
-        "column": 119
+        "line": 77,
+        "column": 105
       }
     },
     "uid-15": {
       "start": {
-        "line": 80,
-        "column": 29
+        "line": 79,
+        "column": 2
       },
       "end": {
-        "line": 80,
-        "column": 69
+        "line": 85,
+        "column": 8
       }
     },
     "uid-16": {
       "start": {
         "line": 80,
-        "column": 69
+        "column": 4
       },
       "end": {
         "line": 80,
-        "column": 113
+        "column": 50
       }
     },
     "uid-17": {
@@ -859,7 +923,7 @@
       },
       "end": {
         "line": 81,
-        "column": 127
+        "column": 119
       }
     },
     "uid-18": {
@@ -869,17 +933,17 @@
       },
       "end": {
         "line": 81,
-        "column": 71
+        "column": 69
       }
     },
     "uid-19": {
       "start": {
         "line": 81,
-        "column": 71
+        "column": 69
       },
       "end": {
         "line": 81,
-        "column": 121
+        "column": 113
       }
     },
     "uid-20": {
@@ -889,7 +953,7 @@
       },
       "end": {
         "line": 82,
-        "column": 111
+        "column": 127
       }
     },
     "uid-21": {
@@ -899,17 +963,17 @@
       },
       "end": {
         "line": 82,
-        "column": 67
+        "column": 71
       }
     },
     "uid-22": {
       "start": {
         "line": 82,
-        "column": 67
+        "column": 71
       },
       "end": {
         "line": 82,
-        "column": 105
+        "column": 121
       }
     },
     "uid-23": {
@@ -919,7 +983,7 @@
       },
       "end": {
         "line": 83,
-        "column": 122
+        "column": 111
       }
     },
     "uid-24": {
@@ -929,67 +993,67 @@
       },
       "end": {
         "line": 83,
-        "column": 69
+        "column": 67
       }
     },
     "uid-25": {
       "start": {
         "line": 83,
-        "column": 69
+        "column": 67
       },
       "end": {
         "line": 83,
-        "column": 116
+        "column": 105
       }
     },
     "uid-26": {
       "start": {
-        "line": 85,
-        "column": 2
+        "line": 84,
+        "column": 4
       },
       "end": {
-        "line": 93,
-        "column": 8
+        "line": 84,
+        "column": 122
       }
     },
     "uid-27": {
       "start": {
-        "line": 86,
-        "column": 4
+        "line": 84,
+        "column": 29
       },
       "end": {
-        "line": 86,
-        "column": 49
+        "line": 84,
+        "column": 69
       }
     },
     "uid-28": {
       "start": {
-        "line": 87,
-        "column": 4
+        "line": 84,
+        "column": 69
       },
       "end": {
-        "line": 87,
-        "column": 121
+        "line": 84,
+        "column": 116
       }
     },
     "uid-29": {
       "start": {
-        "line": 87,
-        "column": 29
+        "line": 86,
+        "column": 2
       },
       "end": {
-        "line": 87,
-        "column": 66
+        "line": 95,
+        "column": 8
       }
     },
     "uid-30": {
       "start": {
         "line": 87,
-        "column": 66
+        "column": 4
       },
       "end": {
         "line": 87,
-        "column": 115
+        "column": 49
       }
     },
     "uid-31": {
@@ -999,7 +1063,7 @@
       },
       "end": {
         "line": 88,
-        "column": 129
+        "column": 121
       }
     },
     "uid-32": {
@@ -1009,17 +1073,17 @@
       },
       "end": {
         "line": 88,
-        "column": 70
+        "column": 66
       }
     },
     "uid-33": {
       "start": {
         "line": 88,
-        "column": 70
+        "column": 66
       },
       "end": {
         "line": 88,
-        "column": 123
+        "column": 115
       }
     },
     "uid-34": {
@@ -1039,13 +1103,13 @@
       },
       "end": {
         "line": 89,
-        "column": 67
+        "column": 70
       }
     },
     "uid-36": {
       "start": {
         "line": 89,
-        "column": 67
+        "column": 70
       },
       "end": {
         "line": 89,
@@ -1059,7 +1123,7 @@
       },
       "end": {
         "line": 90,
-        "column": 124
+        "column": 129
       }
     },
     "uid-38": {
@@ -1079,7 +1143,7 @@
       },
       "end": {
         "line": 90,
-        "column": 118
+        "column": 123
       }
     },
     "uid-40": {
@@ -1089,7 +1153,7 @@
       },
       "end": {
         "line": 91,
-        "column": 129
+        "column": 124
       }
     },
     "uid-41": {
@@ -1099,17 +1163,17 @@
       },
       "end": {
         "line": 91,
-        "column": 69
+        "column": 67
       }
     },
     "uid-42": {
       "start": {
         "line": 91,
-        "column": 69
+        "column": 67
       },
       "end": {
         "line": 91,
-        "column": 123
+        "column": 118
       }
     },
     "uid-43": {
@@ -1119,7 +1183,7 @@
       },
       "end": {
         "line": 92,
-        "column": 128
+        "column": 129
       }
     },
     "uid-44": {
@@ -1129,36 +1193,96 @@
       },
       "end": {
         "line": 92,
-        "column": 64
+        "column": 69
       }
     },
     "uid-45": {
       "start": {
         "line": 92,
-        "column": 64
+        "column": 69
       },
       "end": {
         "line": 92,
-        "column": 122
+        "column": 123
       }
     },
     "uid-46": {
       "start": {
-        "line": 94,
-        "column": 2
+        "line": 93,
+        "column": 4
       },
       "end": {
-        "line": 96,
-        "column": 8
+        "line": 93,
+        "column": 125
       }
     },
     "uid-47": {
       "start": {
-        "line": 95,
+        "line": 93,
+        "column": 29
+      },
+      "end": {
+        "line": 93,
+        "column": 67
+      }
+    },
+    "uid-48": {
+      "start": {
+        "line": 93,
+        "column": 67
+      },
+      "end": {
+        "line": 93,
+        "column": 119
+      }
+    },
+    "uid-49": {
+      "start": {
+        "line": 94,
         "column": 4
       },
       "end": {
-        "line": 95,
+        "line": 94,
+        "column": 128
+      }
+    },
+    "uid-50": {
+      "start": {
+        "line": 94,
+        "column": 29
+      },
+      "end": {
+        "line": 94,
+        "column": 64
+      }
+    },
+    "uid-51": {
+      "start": {
+        "line": 94,
+        "column": 64
+      },
+      "end": {
+        "line": 94,
+        "column": 122
+      }
+    },
+    "uid-52": {
+      "start": {
+        "line": 96,
+        "column": 2
+      },
+      "end": {
+        "line": 98,
+        "column": 8
+      }
+    },
+    "uid-53": {
+      "start": {
+        "line": 97,
+        "column": 4
+      },
+      "end": {
+        "line": 97,
         "column": 39
       }
     }

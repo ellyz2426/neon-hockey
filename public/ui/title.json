@@ -248,6 +248,35 @@
               }
             },
             "dataUid": "uid-22"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "MALLET SKINS"
+                ],
+                "properties": {
+                  "class": "small-btn-text",
+                  "style": {
+                    "color": "#66ffaa"
+                  }
+                },
+                "dataUid": "uid-25"
+              }
+            ],
+            "properties": {
+              "id": "mallet-skins-btn",
+              "class": "small-btn",
+              "cursor": "pointer",
+              "style": {
+                "borderColor": "#00ff88"
+              }
+            },
+            "dataUid": "uid-24"
           }
         ],
         "properties": {
@@ -434,7 +463,7 @@
         "column": 0
       },
       "end": {
-        "line": 105,
+        "line": 108,
         "column": 6
       }
     },
@@ -634,7 +663,7 @@
         "column": 2
       },
       "end": {
-        "line": 104,
+        "line": 107,
         "column": 8
       }
     },
@@ -656,6 +685,26 @@
       "end": {
         "line": 102,
         "column": 76
+      }
+    },
+    "uid-24": {
+      "start": {
+        "line": 104,
+        "column": 4
+      },
+      "end": {
+        "line": 106,
+        "column": 10
+      }
+    },
+    "uid-25": {
+      "start": {
+        "line": 105,
+        "column": 6
+      },
+      "end": {
+        "line": 105,
+        "column": 78
       }
     }
   }

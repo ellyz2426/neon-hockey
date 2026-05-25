@@ -291,4 +291,45 @@ export class EffectsManager {
       }
     }
   }
+
+  // ─── Victory Confetti ───
+  victoryConfetti(won: boolean) {
+    const colors = won
+      ? ['#00ff88', '#00ccff', '#ffcc00', '#ff44ff', '#ffffff']
+      : ['#ff4444', '#ff8844', '#884444'];
+    const confettiCount = won ? 60 : 20;
+
+    for (let i = 0; i < confettiCount; i++) {
+      const color = colors[i % colors.length];
+      const mat = new MeshBasicMaterial({
+        color: new Color(color),
+        transparent: true,
+        opacity: 1.0,
+        blending: AdditiveBlending,
+      });
+      // Mix of shapes: small rectangles and squares
+      const w = 0.005 + Math.random() * 0.01;
+      const h = 0.01 + Math.random() * 0.015;
+      const geo = new PlaneGeometry(w, h);
+      const mesh = new Mesh(geo, mat);
+
+      // Spawn above the table area
+      mesh.position.set(
+        (Math.random() - 0.5) * 1.2,
+        0.5 + Math.random() * 0.3,
+        (Math.random() - 0.5) * 2.0,
+      );
+      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+      this.parent.add(mesh);
+
+      this.particles.push({
+        mesh,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: 1.5 + Math.random() * 2.0,
+        vz: (Math.random() - 0.5) * 0.8,
+        life: 2.0 + Math.random() * 1.5,
+        maxLife: 3.5,
+      });
+    }
+  }
 }

@@ -116,6 +116,14 @@
     </div>
   </div>
   <div class="set-section">
+    <span class="set-label">CAMERA ANGLE</span>
+    <div class="theme-row">
+      <div id="cam-prev-btn" class="nav-btn" cursor="pointer"><span class="nav-text">&lt;</span></div>
+      <span id="cam-name" class="theme-name">Classic</span>
+      <div id="cam-next-btn" class="nav-btn" cursor="pointer"><span class="nav-text">&gt;</span></div>
+    </div>
+  </div>
+  <div class="set-section">
     <span class="set-label">MASTER VOLUME</span>
     <div class="set-row">
       <div id="master-down-btn" class="vol-btn" cursor="pointer"><span class="vol-btn-text">-</span></div>

@@ -88,6 +88,10 @@
     <span class="mode-name">PRACTICE</span>
     <span class="mode-desc">Free play, no opponent</span>
   </div>
+  <div id="local2p-btn" class="mode-btn" cursor="pointer" style="background-color: rgba(0, 200, 100, 0.2); border-color: #00cc66;">
+    <span class="mode-name" style="color: #00ff88;">👥 2 PLAYER LOCAL</span>
+    <span class="mode-desc" style="color: #55aa77;">Mouse vs WASD on one screen</span>
+  </div>
   <div id="daily-btn" class="mode-btn" cursor="pointer" style="background-color: rgba(200, 120, 0, 0.25); border-color: #ffaa00;">
     <span class="mode-name" style="color: #ffcc00;">⭐ DAILY CHALLENGE</span>
     <span class="mode-desc" style="color: #aa8844;">New challenge every day</span>

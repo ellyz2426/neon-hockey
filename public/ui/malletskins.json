@@ -1,0 +1,938 @@
+{
+  "element": {
+    "type": "container",
+    "sourceTag": "div",
+    "children": [
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "🏒 MALLET SKINS"
+        ],
+        "properties": {
+          "class": "title"
+        },
+        "dataUid": "uid-2"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "🟢"
+                ],
+                "properties": {
+                  "id": "ms-icon-0",
+                  "class": "skin-icon"
+                },
+                "dataUid": "uid-5"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Neon Green"
+                    ],
+                    "properties": {
+                      "id": "ms-name-0",
+                      "class": "skin-name"
+                    },
+                    "dataUid": "uid-7"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "EQUIPPED"
+                    ],
+                    "properties": {
+                      "id": "ms-status-0",
+                      "class": "equipped"
+                    },
+                    "dataUid": "uid-8"
+                  }
+                ],
+                "properties": {
+                  "class": "skin-info"
+                },
+                "dataUid": "uid-6"
+              }
+            ],
+            "properties": {
+              "id": "ms-0",
+              "class": "skin-row"
+            },
+            "dataUid": "uid-4"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "🔵"
+                ],
+                "properties": {
+                  "id": "ms-icon-1",
+                  "class": "skin-icon"
+                },
+                "dataUid": "uid-10"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Electric Blue"
+                    ],
+                    "properties": {
+                      "id": "ms-name-1",
+                      "class": "skin-name"
+                    },
+                    "dataUid": "uid-12"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Available"
+                    ],
+                    "properties": {
+                      "id": "ms-status-1",
+                      "class": "skin-status"
+                    },
+                    "dataUid": "uid-13"
+                  }
+                ],
+                "properties": {
+                  "class": "skin-info"
+                },
+                "dataUid": "uid-11"
+              }
+            ],
+            "properties": {
+              "id": "ms-1",
+              "class": "skin-row"
+            },
+            "dataUid": "uid-9"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "💗"
+                ],
+                "properties": {
+                  "id": "ms-icon-2",
+                  "class": "skin-icon"
+                },
+                "dataUid": "uid-15"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Hot Pink"
+                    ],
+                    "properties": {
+                      "id": "ms-name-2",
+                      "class": "skin-name"
+                    },
+                    "dataUid": "uid-17"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Available"
+                    ],
+                    "properties": {
+                      "id": "ms-status-2",
+                      "class": "skin-status"
+                    },
+                    "dataUid": "uid-18"
+                  }
+                ],
+                "properties": {
+                  "class": "skin-info"
+                },
+                "dataUid": "uid-16"
+              }
+            ],
+            "properties": {
+              "id": "ms-2",
+              "class": "skin-row"
+            },
+            "dataUid": "uid-14"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "🥇"
+                ],
+                "properties": {
+                  "id": "ms-icon-3",
+                  "class": "skin-icon"
+                },
+                "dataUid": "uid-20"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Gold Rush"
+                    ],
+                    "properties": {
+                      "id": "ms-name-3",
+                      "class": "skin-name"
+                    },
+                    "dataUid": "uid-22"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Available"
+                    ],
+                    "properties": {
+                      "id": "ms-status-3",
+                      "class": "skin-status"
+                    },
+                    "dataUid": "uid-23"
+                  }
+                ],
+                "properties": {
+                  "class": "skin-info"
+                },
+                "dataUid": "uid-21"
+              }
+            ],
+            "properties": {
+              "id": "ms-3",
+              "class": "skin-row"
+            },
+            "dataUid": "uid-19"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "🟣"
+                ],
+                "properties": {
+                  "id": "ms-icon-4",
+                  "class": "skin-icon"
+                },
+                "dataUid": "uid-25"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Void Walker"
+                    ],
+                    "properties": {
+                      "id": "ms-name-4",
+                      "class": "skin-name"
+                    },
+                    "dataUid": "uid-27"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "🔒 Win 25 games"
+                    ],
+                    "properties": {
+                      "id": "ms-status-4",
+                      "class": "locked"
+                    },
+                    "dataUid": "uid-28"
+                  }
+                ],
+                "properties": {
+                  "class": "skin-info"
+                },
+                "dataUid": "uid-26"
+              }
+            ],
+            "properties": {
+              "id": "ms-4",
+              "class": "skin-row"
+            },
+            "dataUid": "uid-24"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "⬜"
+                ],
+                "properties": {
+                  "id": "ms-icon-5",
+                  "class": "skin-icon"
+                },
+                "dataUid": "uid-30"
+              },
+              {
+                "type": "container",
+                "sourceTag": "div",
+                "children": [
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "Chrome"
+                    ],
+                    "properties": {
+                      "id": "ms-name-5",
+                      "class": "skin-name"
+                    },
+                    "dataUid": "uid-32"
+                  },
+                  {
+                    "sourceTag": "span",
+                    "type": "custom",
+                    "children": [
+                      "🔒 Unlock 20 achievements"
+                    ],
+                    "properties": {
+                      "id": "ms-status-5",
+                      "class": "locked"
+                    },
+                    "dataUid": "uid-33"
+                  }
+                ],
+                "properties": {
+                  "class": "skin-info"
+                },
+                "dataUid": "uid-31"
+              }
+            ],
+            "properties": {
+              "id": "ms-5",
+              "class": "skin-row"
+            },
+            "dataUid": "uid-29"
+          }
+        ],
+        "properties": {
+          "class": "skins-grid"
+        },
+        "dataUid": "uid-3"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          "← BACK"
+        ],
+        "properties": {
+          "id": "ms-back-btn",
+          "class": "back-btn"
+        },
+        "dataUid": "uid-34"
+      }
+    ],
+    "properties": {
+      "class": "panel"
+    },
+    "dataUid": "uid-1"
+  },
+  "classes": {
+    "panel": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "column",
+        "padding": "3",
+        "backgroundColor": "rgba(0, 10, 20, 0.92)",
+        "borderColor": "#00ff88",
+        "borderWidth": "0.15",
+        "borderRadius": 1.5,
+        "gap": "1.5",
+        "alignItems": "center"
+      }
+    },
+    "title": {
+      "content": {
+        "fontSize": "3",
+        "color": "#00ff88",
+        "fontWeight": "bold",
+        "textAlign": "center"
+      }
+    },
+    "skins-grid": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": "1",
+        "width": "100%"
+      }
+    },
+    "skin-row": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "padding": "1.2",
+        "borderRadius": 0.8,
+        "borderColor": "rgba(0, 255, 136, 0.3)",
+        "borderWidth": "0.08",
+        "backgroundColor": "rgba(0, 255, 136, 0.05)",
+        "gap": "1.5",
+        "cursor": "pointer"
+      }
+    },
+    "skin-icon": {
+      "content": {
+        "fontSize": "2.5",
+        "minWidth": "4",
+        "textAlign": "center"
+      }
+    },
+    "skin-info": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": "1",
+        "gap": "0.3"
+      }
+    },
+    "skin-name": {
+      "content": {
+        "fontSize": "1.8",
+        "color": "#ffffff",
+        "fontWeight": "bold"
+      }
+    },
+    "skin-status": {
+      "content": {
+        "fontSize": "1.2",
+        "color": "#888888"
+      }
+    },
+    "equipped": {
+      "content": {
+        "fontSize": "1.2",
+        "color": "#00ff88",
+        "fontWeight": "bold"
+      }
+    },
+    "locked": {
+      "content": {
+        "fontSize": "1.2",
+        "color": "#ff4444"
+      }
+    },
+    "back-btn": {
+      "content": {
+        "fontSize": "1.8",
+        "color": "#aaaaaa",
+        "padding": "1",
+        "borderRadius": 0.5,
+        "borderColor": "rgba(170, 170, 170, 0.3)",
+        "borderWidth": "0.08",
+        "cursor": "pointer",
+        "textAlign": "center",
+        "marginTop": "1"
+      }
+    }
+  },
+  "ranges": {
+    "panel": {
+      "start": {
+        "line": 1,
+        "column": 2
+      },
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    },
+    "title": {
+      "start": {
+        "line": 12,
+        "column": 2
+      },
+      "end": {
+        "line": 12,
+        "column": 8
+      }
+    },
+    "skins-grid": {
+      "start": {
+        "line": 18,
+        "column": 2
+      },
+      "end": {
+        "line": 18,
+        "column": 13
+      }
+    },
+    "skin-row": {
+      "start": {
+        "line": 24,
+        "column": 2
+      },
+      "end": {
+        "line": 24,
+        "column": 11
+      }
+    },
+    "skin-icon": {
+      "start": {
+        "line": 36,
+        "column": 2
+      },
+      "end": {
+        "line": 36,
+        "column": 12
+      }
+    },
+    "skin-info": {
+      "start": {
+        "line": 41,
+        "column": 2
+      },
+      "end": {
+        "line": 41,
+        "column": 12
+      }
+    },
+    "skin-name": {
+      "start": {
+        "line": 47,
+        "column": 2
+      },
+      "end": {
+        "line": 47,
+        "column": 12
+      }
+    },
+    "skin-status": {
+      "start": {
+        "line": 52,
+        "column": 2
+      },
+      "end": {
+        "line": 52,
+        "column": 14
+      }
+    },
+    "equipped": {
+      "start": {
+        "line": 56,
+        "column": 2
+      },
+      "end": {
+        "line": 56,
+        "column": 11
+      }
+    },
+    "locked": {
+      "start": {
+        "line": 61,
+        "column": 2
+      },
+      "end": {
+        "line": 61,
+        "column": 9
+      }
+    },
+    "back-btn": {
+      "start": {
+        "line": 65,
+        "column": 2
+      },
+      "end": {
+        "line": 65,
+        "column": 11
+      }
+    },
+    "uid-1": {
+      "start": {
+        "line": 77,
+        "column": 0
+      },
+      "end": {
+        "line": 124,
+        "column": 6
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 78,
+        "column": 2
+      },
+      "end": {
+        "line": 78,
+        "column": 44
+      }
+    },
+    "uid-3": {
+      "start": {
+        "line": 79,
+        "column": 2
+      },
+      "end": {
+        "line": 122,
+        "column": 8
+      }
+    },
+    "uid-4": {
+      "start": {
+        "line": 80,
+        "column": 4
+      },
+      "end": {
+        "line": 86,
+        "column": 10
+      }
+    },
+    "uid-5": {
+      "start": {
+        "line": 81,
+        "column": 6
+      },
+      "end": {
+        "line": 81,
+        "column": 54
+      }
+    },
+    "uid-6": {
+      "start": {
+        "line": 82,
+        "column": 6
+      },
+      "end": {
+        "line": 85,
+        "column": 12
+      }
+    },
+    "uid-7": {
+      "start": {
+        "line": 83,
+        "column": 8
+      },
+      "end": {
+        "line": 83,
+        "column": 64
+      }
+    },
+    "uid-8": {
+      "start": {
+        "line": 84,
+        "column": 8
+      },
+      "end": {
+        "line": 84,
+        "column": 63
+      }
+    },
+    "uid-9": {
+      "start": {
+        "line": 87,
+        "column": 4
+      },
+      "end": {
+        "line": 93,
+        "column": 10
+      }
+    },
+    "uid-10": {
+      "start": {
+        "line": 88,
+        "column": 6
+      },
+      "end": {
+        "line": 88,
+        "column": 54
+      }
+    },
+    "uid-11": {
+      "start": {
+        "line": 89,
+        "column": 6
+      },
+      "end": {
+        "line": 92,
+        "column": 12
+      }
+    },
+    "uid-12": {
+      "start": {
+        "line": 90,
+        "column": 8
+      },
+      "end": {
+        "line": 90,
+        "column": 67
+      }
+    },
+    "uid-13": {
+      "start": {
+        "line": 91,
+        "column": 8
+      },
+      "end": {
+        "line": 91,
+        "column": 67
+      }
+    },
+    "uid-14": {
+      "start": {
+        "line": 94,
+        "column": 4
+      },
+      "end": {
+        "line": 100,
+        "column": 10
+      }
+    },
+    "uid-15": {
+      "start": {
+        "line": 95,
+        "column": 6
+      },
+      "end": {
+        "line": 95,
+        "column": 54
+      }
+    },
+    "uid-16": {
+      "start": {
+        "line": 96,
+        "column": 6
+      },
+      "end": {
+        "line": 99,
+        "column": 12
+      }
+    },
+    "uid-17": {
+      "start": {
+        "line": 97,
+        "column": 8
+      },
+      "end": {
+        "line": 97,
+        "column": 62
+      }
+    },
+    "uid-18": {
+      "start": {
+        "line": 98,
+        "column": 8
+      },
+      "end": {
+        "line": 98,
+        "column": 67
+      }
+    },
+    "uid-19": {
+      "start": {
+        "line": 101,
+        "column": 4
+      },
+      "end": {
+        "line": 107,
+        "column": 10
+      }
+    },
+    "uid-20": {
+      "start": {
+        "line": 102,
+        "column": 6
+      },
+      "end": {
+        "line": 102,
+        "column": 54
+      }
+    },
+    "uid-21": {
+      "start": {
+        "line": 103,
+        "column": 6
+      },
+      "end": {
+        "line": 106,
+        "column": 12
+      }
+    },
+    "uid-22": {
+      "start": {
+        "line": 104,
+        "column": 8
+      },
+      "end": {
+        "line": 104,
+        "column": 63
+      }
+    },
+    "uid-23": {
+      "start": {
+        "line": 105,
+        "column": 8
+      },
+      "end": {
+        "line": 105,
+        "column": 67
+      }
+    },
+    "uid-24": {
+      "start": {
+        "line": 108,
+        "column": 4
+      },
+      "end": {
+        "line": 114,
+        "column": 10
+      }
+    },
+    "uid-25": {
+      "start": {
+        "line": 109,
+        "column": 6
+      },
+      "end": {
+        "line": 109,
+        "column": 54
+      }
+    },
+    "uid-26": {
+      "start": {
+        "line": 110,
+        "column": 6
+      },
+      "end": {
+        "line": 113,
+        "column": 12
+      }
+    },
+    "uid-27": {
+      "start": {
+        "line": 111,
+        "column": 8
+      },
+      "end": {
+        "line": 111,
+        "column": 65
+      }
+    },
+    "uid-28": {
+      "start": {
+        "line": 112,
+        "column": 8
+      },
+      "end": {
+        "line": 112,
+        "column": 68
+      }
+    },
+    "uid-29": {
+      "start": {
+        "line": 115,
+        "column": 4
+      },
+      "end": {
+        "line": 121,
+        "column": 10
+      }
+    },
+    "uid-30": {
+      "start": {
+        "line": 116,
+        "column": 6
+      },
+      "end": {
+        "line": 116,
+        "column": 53
+      }
+    },
+    "uid-31": {
+      "start": {
+        "line": 117,
+        "column": 6
+      },
+      "end": {
+        "line": 120,
+        "column": 12
+      }
+    },
+    "uid-32": {
+      "start": {
+        "line": 118,
+        "column": 8
+      },
+      "end": {
+        "line": 118,
+        "column": 60
+      }
+    },
+    "uid-33": {
+      "start": {
+        "line": 119,
+        "column": 8
+      },
+      "end": {
+        "line": 119,
+        "column": 78
+      }
+    },
+    "uid-34": {
+      "start": {
+        "line": 123,
+        "column": 2
+      },
+      "end": {
+        "line": 123,
+        "column": 53
+      }
+    }
+  }
+}

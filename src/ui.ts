@@ -10,6 +10,7 @@ import type { GameState, GameMode, Difficulty } from './index';
 import type { ActiveEffect } from './powerups';
 import type { DailyChallenge } from './daily-challenge';
 import type { PuckSkin } from './puck-skins';
+import type { MalletSkin } from './mallet-skins';
 
 type ClickHandler = (() => void) | null;
 
@@ -40,6 +41,9 @@ export class UIManager {
   onPlayDailyChallenge: (() => void) | null = null;
   onShowPuckSkins: (() => void) | null = null;
   onSelectPuckSkin: ((skinId: string) => void) | null = null;
+  onShowMalletSkins: (() => void) | null = null;
+  onSelectMalletSkin: ((skinId: string) => void) | null = null;
+  onChangeCameraAngle: ((dir: number) => void) | null = null;
 
   // Audio callback for button clicks
   onButtonClick: (() => void) | null = null;
@@ -221,6 +225,13 @@ export class UIManager {
       maxHeight: 1.0,
     });
 
+    // Mallet Skins
+    this.createPanel('malletskins', '/ui/malletskins.json', {
+      position: [0, 1.5, -1.5],
+      maxWidth: 0.9,
+      maxHeight: 1.0,
+    });
+
     // Combo display — world space, near table
     this.createPanel('combo', '/ui/combo.json', {
       maxWidth: 0.15,
@@ -271,6 +282,7 @@ export class UIManager {
     this.wireBtn(titleDoc, 'stats-btn', () => this.onShowStats?.());
     this.wireBtn(titleDoc, 'history-btn', () => this.onShowHistory?.());
     this.wireBtn(titleDoc, 'skins-btn', () => this.onShowPuckSkins?.());
+    this.wireBtn(titleDoc, 'mallet-skins-btn', () => this.onShowMalletSkins?.());
 
     // Mode select (7 modes including daily)
     const modeDoc = this.getDoc('modeselect');
@@ -280,6 +292,7 @@ export class UIManager {
     this.wireBtn(modeDoc, 'survival-btn', () => this.onSetMode?.('survival'));
     this.wireBtn(modeDoc, 'tournament-btn', () => this.onSetMode?.('tournament'));
     this.wireBtn(modeDoc, 'practice-btn', () => this.onSetMode?.('practice'));
+    this.wireBtn(modeDoc, 'local2p-btn', () => this.onSetMode?.('local2p'));
     this.wireBtn(modeDoc, 'daily-btn', () => this.onShowDailyChallenge?.());
     this.wireBtn(modeDoc, 'mode-back-btn', () => this.onBack?.());
 
@@ -312,6 +325,8 @@ export class UIManager {
     const setDoc = this.getDoc('settings');
     this.wireBtn(setDoc, 'theme-prev-btn', () => this.onChangeTheme?.(-1));
     this.wireBtn(setDoc, 'theme-next-btn', () => this.onChangeTheme?.(1));
+    this.wireBtn(setDoc, 'cam-prev-btn', () => this.onChangeCameraAngle?.(-1));
+    this.wireBtn(setDoc, 'cam-next-btn', () => this.onChangeCameraAngle?.(1));
     this.wireBtn(setDoc, 'master-up-btn', () => this.onSetVolume?.('master', 0.1));
     this.wireBtn(setDoc, 'master-down-btn', () => this.onSetVolume?.('master', -0.1));
     this.wireBtn(setDoc, 'sfx-up-btn', () => this.onSetVolume?.('sfx', 0.1));
@@ -347,7 +362,18 @@ export class UIManager {
         this.onSelectPuckSkin?.(skinIds[idx]);
       });
     }
-    this.wireBtn(psDoc, 'ps-back-btn', () => this.onShowSettings?.());
+    this.wireBtn(psDoc, 'ps-back-btn', () => this.onBack?.());
+
+    // Mallet Skins
+    const msDoc = this.getDoc('malletskins');
+    for (let i = 0; i < 6; i++) {
+      const idx = i;
+      this.wireBtn(msDoc, `ms-${idx}`, () => {
+        const skinIds = ['default_green', 'electric_blue', 'hot_pink', 'gold', 'void', 'chrome'];
+        this.onSelectMalletSkin?.(skinIds[idx]);
+      });
+    }
+    this.wireBtn(msDoc, 'ms-back-btn', () => this.onBack?.());
 
     // Set initial visibility
     this.setState(this.currentState);
@@ -357,7 +383,7 @@ export class UIManager {
     this.currentState = state;
     const panels = ['title', 'modeselect', 'difficulty', 'hud', 'message', 'pause',
       'gameover', 'leaderboard', 'achievements', 'settings', 'help', 'poweruphud',
-      'countdown', 'matchhistory', 'stats', 'dailychallenge', 'puckskins', 'combo'];
+      'countdown', 'matchhistory', 'stats', 'dailychallenge', 'puckskins', 'malletskins', 'combo'];
     const visible: Record<string, string[]> = {
       'title': ['title'],
       'modeselect': ['modeselect'],
@@ -374,6 +400,7 @@ export class UIManager {
       'stats': ['stats'],
       'dailychallenge': ['dailychallenge'],
       'puckskins': ['puckskins'],
+      'malletskins': ['malletskins'],
     };
 
     const show = visible[state] || [];
@@ -577,6 +604,28 @@ export class UIManager {
     this.setText(doc, 'selected-skin-label', current ? `${current.icon} ${current.name}` : '');
   }
 
+  updateMalletSkins(skins: MalletSkin[], currentId: string, unlocked: Set<string>) {
+    const doc = this.getDoc('malletskins');
+    if (!doc) return;
+    skins.forEach((skin, i) => {
+      this.setText(doc, `ms-icon-${i}`, skin.icon);
+      const isUnlocked = unlocked.has(skin.id);
+      this.setText(doc, `ms-name-${i}`, isUnlocked ? skin.name : `🔒 ${skin.name}`);
+      if (skin.id === currentId) {
+        this.setText(doc, `ms-status-${i}`, 'EQUIPPED');
+      } else if (isUnlocked) {
+        this.setText(doc, `ms-status-${i}`, 'Available');
+      } else {
+        this.setText(doc, `ms-status-${i}`, `🔒 ${skin.unlockCondition || 'Locked'}`);
+      }
+    });
+  }
+
+  updateCameraAngle(name: string) {
+    const doc = this.getDoc('settings');
+    this.setText(doc, 'cam-name', name);
+  }
+
   updateCombo(multiplier: number, streak: number) {
     const doc = this.getDoc('combo');
     if (!doc) return;
@@ -627,4 +676,9 @@ export const ACHIEVEMENT_LIST = [
   { id: 'slippery_win', name: 'Ice Skater', desc: 'Win a no-friction daily challenge' },
   { id: 'mirror_win', name: 'Mirror Master', desc: 'Win a mirror controls daily challenge' },
   { id: 'all_modes', name: 'Jack of All Trades', desc: 'Win a game in every mode' },
+  // Round 5 achievements
+  { id: 'mallet_customizer', name: 'Mallet Master', desc: 'Change your mallet skin' },
+  { id: 'local2p_first', name: 'Friendly Rivalry', desc: 'Play a 2-player local match' },
+  { id: 'local2p_10', name: 'Party Host', desc: 'Play 10 local 2-player matches' },
+  { id: 'full_wardrobe', name: 'Full Wardrobe', desc: 'Unlock all puck and mallet skins' },
 ];

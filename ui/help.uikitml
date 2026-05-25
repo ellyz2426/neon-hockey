@@ -73,7 +73,8 @@
   <span class="help-text">Hit the puck into the opponent goal!</span>
   <div class="controls-section">
     <span class="section-title">BROWSER CONTROLS</span>
-    <div class="control-row"><span class="key-text">Mouse</span><span class="action-text">Move mallet</span></div>
+    <div class="control-row"><span class="key-text">Mouse</span><span class="action-text">Move mallet (P1)</span></div>
+    <div class="control-row"><span class="key-text">WASD</span><span class="action-text">Move mallet (P2 in 2P)</span></div>
     <div class="control-row"><span class="key-text">ESC</span><span class="action-text">Pause game</span></div>
   </div>
   <div class="controls-section">
@@ -90,6 +91,7 @@
     <div class="control-row"><span class="key-text">Power-Up</span><span class="action-text">Collect table power-ups</span></div>
     <div class="control-row"><span class="key-text">Survival</span><span class="action-text">3 lives, max score</span></div>
     <div class="control-row"><span class="key-text">Tournament</span><span class="action-text">4 rounds, harder each</span></div>
+    <div class="control-row"><span class="key-text">2 Player</span><span class="action-text">Mouse vs WASD local</span></div>
     <div class="control-row"><span class="key-text">Daily</span><span class="action-text">Unique challenge each day</span></div>
   </div>
   <div id="help-back-btn" class="back-btn" cursor="pointer">

@@ -45,11 +45,13 @@ import { Environment } from './environment';
 import { TableThemes, TableTheme } from './themes';
 import { getDailyChallenge, isDailyChallengeCompleted, completeDailyChallenge, getDailyStreak, DailyChallenge, ChallengeRules } from './daily-challenge';
 import { PUCK_SKINS, PuckSkin, getUnlockedSkins, getSavedPuckSkin, savePuckSkin, getPuckSkinById } from './puck-skins';
+import { MALLET_SKINS, MalletSkin, getUnlockedMalletSkins, getSavedMalletSkin, saveMalletSkin, getMalletSkinById } from './mallet-skins';
+import { CAMERA_ANGLES, CameraAngle, getCameraAngleById, getSavedCameraAngle, saveCameraAngle } from './camera-angles';
 import { TutorialSystem } from './tutorial';
 
 // ─── TYPES ───
-export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'matchhistory' | 'stats' | 'dailychallenge' | 'puckskins';
-export type GameMode = 'classic' | 'timed' | 'powerup' | 'survival' | 'tournament' | 'practice' | 'daily';
+export type GameState = 'title' | 'modeselect' | 'difficulty' | 'countdown' | 'playing' | 'paused' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'matchhistory' | 'stats' | 'dailychallenge' | 'puckskins' | 'malletskins';
+export type GameMode = 'classic' | 'timed' | 'powerup' | 'survival' | 'tournament' | 'practice' | 'daily' | 'local2p';
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
 interface Stats {
@@ -140,6 +142,10 @@ async function main() {
   let currentDailyChallenge: DailyChallenge | null = null;
   let dailyRules: ChallengeRules | null = null;
   let currentPuckSkin: PuckSkin = getPuckSkinById(getSavedPuckSkin());
+  let currentMalletSkin: MalletSkin = getMalletSkinById(getSavedMalletSkin());
+  let currentCameraAngleIndex = CAMERA_ANGLES.findIndex(a => a.id === getSavedCameraAngle());
+  if (currentCameraAngleIndex < 0) currentCameraAngleIndex = 0;
+  let isLocal2P = false;
   const tutorial = new TutorialSystem();
 
   // Slow-motion replay state
@@ -389,18 +395,18 @@ async function main() {
   // ─── PLAYER MALLET ───
   const playerMalletGeo = new CylinderGeometry(MALLET_RADIUS, MALLET_RADIUS, MALLET_HEIGHT, 24);
   const playerMalletMat = new MeshStandardMaterial({
-    color: 0x00ff88,
-    emissive: 0x00ff88,
-    emissiveIntensity: 0.6,
-    metalness: 0.4,
-    roughness: 0.3,
+    color: new Color(currentMalletSkin.color),
+    emissive: new Color(currentMalletSkin.emissiveColor),
+    emissiveIntensity: currentMalletSkin.emissiveIntensity,
+    metalness: currentMalletSkin.metalness,
+    roughness: currentMalletSkin.roughness,
   });
   const playerMallet = new Mesh(playerMalletGeo, playerMalletMat);
   playerMallet.position.set(0, MALLET_HEIGHT / 2 + 0.002, TABLE_LENGTH * 0.35);
   tableGroup.add(playerMallet);
 
   const playerRingGeo = new RingGeometry(MALLET_RADIUS, MALLET_RADIUS + 0.008, 24);
-  const playerRingMat = new MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.5, side: DoubleSide });
+  const playerRingMat = new MeshBasicMaterial({ color: new Color(currentMalletSkin.ringColor), transparent: true, opacity: currentMalletSkin.ringOpacity, side: DoubleSide });
   const playerRing = new Mesh(playerRingGeo, playerRingMat);
   playerRing.rotation.x = -Math.PI / 2;
   playerRing.position.set(0, MALLET_HEIGHT + 0.004, TABLE_LENGTH * 0.35);
@@ -450,7 +456,9 @@ async function main() {
   }
 
   // ─── BASE CAMERA POSITION (for shake) ───
-  const baseCameraPos = new Vector3(0, 1.6, 0.8);
+  const camAngle = CAMERA_ANGLES[currentCameraAngleIndex];
+  const baseCameraPos = new Vector3(camAngle.position[0], camAngle.position[1], camAngle.position[2]);
+  const cameraLookAt = new Vector3(camAngle.lookAt[0], camAngle.lookAt[1], camAngle.lookAt[2]);
 
   // ─── HELPER FUNCTIONS ───
   function resetPuck() {
@@ -481,6 +489,7 @@ async function main() {
     isPowerUpMode = gameMode === 'powerup';
     isPracticeMode = gameMode === 'practice';
     isDailyMode = gameMode === 'daily';
+    isLocal2P = gameMode === 'local2p';
     stats.maxDeficit = 0;
     slowMoActive = false;
     slowMoTimer = 0;
@@ -546,6 +555,7 @@ async function main() {
     isPowerUpMode = gameMode === 'powerup';
     isPracticeMode = gameMode === 'practice';
     isDailyMode = gameMode === 'daily';
+    isLocal2P = gameMode === 'local2p';
     stats.maxDeficit = 0;
     slowMoActive = false;
     slowMoTimer = 0;
@@ -668,8 +678,9 @@ async function main() {
     }
 
     changeState('gameover');
-    ui.updateGameOver(playerScore, cpuScore, won, isDailyMode ? 'daily' : gameMode, comboMultiplier);
+    ui.updateGameOver(playerScore, cpuScore, won, isDailyMode ? 'daily' : (isLocal2P ? 'local2p' : gameMode), comboMultiplier);
     audio.playGameEnd(won);
+    effects.victoryConfetti(won);
   }
 
   function changeState(newState: GameState) {
@@ -804,6 +815,18 @@ async function main() {
     const allModes = ['classic', 'timed', 'powerup', 'survival', 'tournament', 'daily'];
     const allPlayed = allModes.every(m => stats.modeStats[m]?.wins > 0);
     if (allPlayed) unlockAchievement('all_modes');
+
+    // 2-player achievements
+    if (isLocal2P) {
+      unlockAchievement('local2p_first');
+      const local2pGames = (stats.modeStats['local2p']?.wins ?? 0) + (stats.modeStats['local2p']?.losses ?? 0);
+      if (local2pGames >= 10) unlockAchievement('local2p_10');
+    }
+
+    // Full wardrobe achievement
+    const allPuckUnlocked = getUnlockedSkins(achievementsUnlocked, stats).size >= PUCK_SKINS.length;
+    const allMalletUnlocked = getUnlockedMalletSkins(achievementsUnlocked, stats).size >= MALLET_SKINS.length;
+    if (allPuckUnlocked && allMalletUnlocked) unlockAchievement('full_wardrobe');
   }
 
   // ─── LEADERBOARD ───
@@ -858,9 +881,12 @@ async function main() {
   ui.onSetMode = (mode: GameMode) => {
     gameMode = mode;
     if (mode === 'practice') {
-      // Practice mode: skip difficulty select, use easy AI or no AI
       difficulty = 'easy';
       ai.setDifficulty('easy');
+      startGameWithCountdown();
+    } else if (mode === 'local2p') {
+      // 2-player local: skip difficulty, no AI
+      difficulty = 'medium';
       startGameWithCountdown();
     } else {
       changeState('difficulty');
@@ -942,6 +968,40 @@ async function main() {
     unlockAchievement('skin_changer');
   };
 
+  // ─── MALLET SKINS CALLBACKS ───
+  ui.onShowMalletSkins = () => {
+    const unlocked = getUnlockedMalletSkins(achievementsUnlocked, stats);
+    ui.updateMalletSkins(MALLET_SKINS, currentMalletSkin.id, unlocked);
+    changeState('malletskins');
+  };
+  ui.onSelectMalletSkin = (skinId: string) => {
+    const unlocked = getUnlockedMalletSkins(achievementsUnlocked, stats);
+    if (!unlocked.has(skinId)) return;
+    const skin = getMalletSkinById(skinId);
+    currentMalletSkin = skin;
+    saveMalletSkin(skin.id);
+    playerMalletMat.color.set(skin.color);
+    playerMalletMat.emissive.set(skin.emissiveColor);
+    playerMalletMat.emissiveIntensity = skin.emissiveIntensity;
+    playerMalletMat.metalness = skin.metalness;
+    playerMalletMat.roughness = skin.roughness;
+    playerRingMat.color.set(skin.ringColor);
+    ui.updateMalletSkins(MALLET_SKINS, skinId, unlocked);
+    unlockAchievement('mallet_customizer');
+  };
+
+  // ─── CAMERA ANGLE CALLBACKS ───
+  ui.onChangeCameraAngle = (dir: number) => {
+    currentCameraAngleIndex += dir;
+    if (currentCameraAngleIndex < 0) currentCameraAngleIndex = CAMERA_ANGLES.length - 1;
+    if (currentCameraAngleIndex >= CAMERA_ANGLES.length) currentCameraAngleIndex = 0;
+    const angle = CAMERA_ANGLES[currentCameraAngleIndex];
+    saveCameraAngle(angle.id);
+    baseCameraPos.set(angle.position[0], angle.position[1], angle.position[2]);
+    cameraLookAt.set(angle.lookAt[0], angle.lookAt[1], angle.lookAt[2]);
+    ui.updateCameraAngle(angle.name);
+  };
+
   // ─── UPDATE LOOP ───
   let prevTime = performance.now();
   const tablePlane = new PlaneGeometry(TABLE_WIDTH * 2, TABLE_LENGTH * 2);
@@ -957,7 +1017,18 @@ async function main() {
     const dt = Math.min((now - prevTime) / 1000, 0.05);
     prevTime = now;
 
-    // Update effects & environment always
+    // Compute effectiveDt early (slow-mo only applies during gameplay)
+    let effectiveDt = dt;
+    if (gameState === 'playing' && slowMoActive) {
+      slowMoTimer -= dt;
+      if (slowMoTimer <= 0) {
+        slowMoActive = false;
+      } else {
+        effectiveDt = dt * SLOW_MO_FACTOR;
+      }
+    }
+
+    // Update effects & environment always (uses dt for non-playing states)
     effects.update(effectiveDt);
     env.update(effectiveDt);
 
@@ -988,17 +1059,6 @@ async function main() {
     }
 
     if (gameState !== 'playing') return;
-
-    // Slow-motion effect
-    let effectiveDt = dt;
-    if (slowMoActive) {
-      slowMoTimer -= dt;
-      if (slowMoTimer <= 0) {
-        slowMoActive = false;
-      } else {
-        effectiveDt = dt * SLOW_MO_FACTOR;
-      }
-    }
 
     gameTime += effectiveDt;
 
@@ -1073,6 +1133,7 @@ async function main() {
         baseCameraPos.y + shake.y,
         baseCameraPos.z + shake.z,
       );
+      camera.lookAt(cameraLookAt.x, cameraLookAt.y, cameraLookAt.z);
     }
 
     // ─── VR controller input ───
@@ -1146,22 +1207,45 @@ async function main() {
       changeState('paused');
     }
 
-    // ─── AI Mallet Control (skip in practice mode) ───
-    if (!isPracticeMode) {
+    // ─── AI / Player 2 Mallet Control ───
+    let prevCpuMalletX = cpuMallet.position.x;
+    let prevCpuMalletZ = cpuMallet.position.z;
+    if (isLocal2P) {
+      // Player 2: WASD keyboard controls
+      prevCpuMalletX = cpuMallet.position.x;
+      prevCpuMalletZ = cpuMallet.position.z;
+      const p2Speed = 1.5;
+      const kb = world.input?.keyboard;
+      if (kb) {
+        if (kb.getKeyPressed('KeyW') || kb.getKeyPressed('ArrowUp')) {
+          cpuMallet.position.z -= p2Speed * effectiveDt;
+        }
+        if (kb.getKeyPressed('KeyS') || kb.getKeyPressed('ArrowDown')) {
+          cpuMallet.position.z += p2Speed * effectiveDt;
+        }
+        if (kb.getKeyPressed('KeyA') || kb.getKeyPressed('ArrowLeft')) {
+          cpuMallet.position.x -= p2Speed * effectiveDt;
+        }
+        if (kb.getKeyPressed('KeyD') || kb.getKeyPressed('ArrowRight')) {
+          cpuMallet.position.x += p2Speed * effectiveDt;
+        }
+      }
+      // Constrain P2 to their half (negative Z)
+      cpuMallet.position.z = Math.max(-TABLE_LENGTH / 2 + effectiveCpuMalletR, Math.min(-0.05, cpuMallet.position.z));
+      cpuMallet.position.x = Math.max(-TABLE_WIDTH / 2 + effectiveCpuMalletR, Math.min(TABLE_WIDTH / 2 - effectiveCpuMalletR, cpuMallet.position.x));
+      cpuRing.position.x = cpuMallet.position.x;
+      cpuRing.position.z = cpuMallet.position.z;
+    } else if (!isPracticeMode) {
       const aiMove = ai.update(dt, puck.position.x, puck.position.z, puckVx, puckVz,
         cpuMallet.position.x, cpuMallet.position.z, TABLE_WIDTH, TABLE_LENGTH, effectiveCpuMalletR);
-      const prevCpuX = cpuMallet.position.x;
-      const prevCpuZ = cpuMallet.position.z;
+      prevCpuMalletX = cpuMallet.position.x;
+      prevCpuMalletZ = cpuMallet.position.z;
       cpuMallet.position.x += (aiMove.x - cpuMallet.position.x) * 0.15;
       cpuMallet.position.z += (aiMove.z - cpuMallet.position.z) * 0.15;
       cpuMallet.position.z = Math.max(-TABLE_LENGTH / 2 + effectiveCpuMalletR, Math.min(-0.05, cpuMallet.position.z));
       cpuMallet.position.x = Math.max(-TABLE_WIDTH / 2 + effectiveCpuMalletR, Math.min(TABLE_WIDTH / 2 - effectiveCpuMalletR, cpuMallet.position.x));
       cpuRing.position.x = cpuMallet.position.x;
       cpuRing.position.z = cpuMallet.position.z;
-
-      // CPU mallet collision (used in puck physics below)
-      var prevCpuMalletX = prevCpuX;
-      var prevCpuMalletZ = prevCpuZ;
     }
 
     // ─── PUCK PHYSICS ───
@@ -1253,8 +1337,8 @@ async function main() {
           const nz = dzC / distC;
           puck.position.x = cpuMallet.position.x + nx * minDistC;
           puck.position.z = cpuMallet.position.z + nz * minDistC;
-          const cpuVx = (cpuMallet.position.x - (prevCpuMalletX ?? cpuMallet.position.x)) / subDt;
-          const cpuVz = (cpuMallet.position.z - (prevCpuMalletZ ?? cpuMallet.position.z)) / subDt;
+          const cpuVx = (cpuMallet.position.x - prevCpuMalletX) / subDt;
+          const cpuVz = (cpuMallet.position.z - prevCpuMalletZ) / subDt;
           const relVn = puckVx * nx + puckVz * nz;
           puckVx = puckVx - 2 * relVn * nx + cpuVx * 0.6;
           puckVz = puckVz - 2 * relVn * nz + cpuVz * 0.6;
